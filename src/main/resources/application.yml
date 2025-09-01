@@ -17,7 +17,7 @@ spring:
   application:
     name: hanip-actor
   datasource:
-    url: jdbc:log4jdbc:mariadb://112.222.157.157:5011/final_project
+    url: jdbc:log4jdbc:mariadb://112.222.157.157:5011/final_actor
     username: green1
     password: spring502
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
