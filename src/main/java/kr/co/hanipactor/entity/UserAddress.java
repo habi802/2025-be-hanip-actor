@@ -19,7 +19,7 @@ public class UserAddress extends UpdatedAt {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "user_id")
-    @Comment("고객 아이디(User)")
+    @Comment("고객 아이디(users)")
     private User user;
 
     @Column(nullable = false, length = 50)

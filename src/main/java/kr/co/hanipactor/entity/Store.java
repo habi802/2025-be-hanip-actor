@@ -21,7 +21,7 @@ public class Store extends UpdatedAt {
 
     @OneToOne
     @JoinColumn(nullable = false, name = "user_id")
-    @Comment("사장 아이디(User)")
+    @Comment("사장 아이디(users)")
     private User user;
 
     @Column(nullable = false, length = 50)
