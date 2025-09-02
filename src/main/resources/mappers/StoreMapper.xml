@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.hanipactor.application.store.StoreMapper">
+
+    <!-- 가게 등록 -->
+    <insert id="save">
+        INSERT INTO stores
+        SET user_id = #{userId}
+        , category = #{category}
+        , name = #{name}
+        , comment = #{comment}
+        , business_number = #{businessNumber}
+        , license_path = #{licensePath}
+        , postcode = #{postcode}
+        , address = #{address}
+        , address_detail = #{addressDetail}
+        , tel = #{tel}
+        , owner_name = #{ownerName}
+    </insert>
+
+    <!-- 가게 리스트 조회 / 비로그인용 -->
+    <select id="findAllStore">
+        SELECT s.id AS storeId, s.name, s.category, s.is_active, s.image_path
+        , COUNT(DISTINCT CONCAT(f.user_id, '_', f.store_id)) AS favorites
+        , IFNULL(AVG(r.rating), 0) AS rating
+          FROM stores s
+          LEFT JOIN favorites f ON s.id = f.store_id
+          LEFT JOIN orders o ON s.id = o.store_id
+          LEFT JOIN reviews r ON o.id = r.order_id
+          LEFT JOIN menus m ON m.store_id = s.id
+        <where>
+            <if test="searchText != null and searchText != ''">
+                (s.name LIKE '%${searchText}%' OR m.name LIKE '%${searchText}%')
+            </if>
+            <if test="category != null and category != ''">
+                AND s.category = #{category}
+            </if>
+        </where>
+        GROUP BY s.id
+        ORDER BY s.id DESC
+    </select>
+
+    <!-- 가게 상세 조회 -->
+    <select id="findByStoreId">
+        SELECT s.id, s.user_id, s.category, s.name, s.comment,
+        s.address, s.tel, s.owner_name, s.is_active, s.image_path,
+        u.phone, u.email
+        FROM stores s
+        JOIN users u ON u.id = s.user_id
+        WHERE s.id = #{storeId}
+    </select>
+
+    <!-- 사장 가게 상세 조회 -->
+    <select id="findByUserId">
+        SELECT s.id, s.user_id, s.category, s.name, s.comment,
+        s.address, s.postcode, s.address_detail, s.tel, s.owner_name, s.is_active, s.image_path,
+        u.phone, u.email
+        FROM stores s
+        JOIN users u ON u.id = s.user_id
+        WHERE s.user_id = #{userId}
+    </select>
+
+    <select id="findStoreIdByUserId">
+        SELECT id
+        FROM stores
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- 가게 정보 수정 -->
+    <update id="updateByUserId">
+        UPDATE stores s
+        JOIN users u ON u.id = s.user_id
+        <set>
+            s.category = #{category}
+            , s.comment = #{comment}
+            <if test="businessNumber != null">
+            , s.business_number = #{businessNumber}
+            </if>
+            <if test="licensePath != null">
+            , s.license_path = #{licensePath}
+            </if>
+            , s.postcode = #{postcode}
+            , s.address = #{address}
+            , s.address_detail = #{addressDetail}
+            , s.tel = #{tel}
+            , s.owner_name = #{ownerName}
+            <if test="imagePath != null">
+                , s.image_path = #{imagePath}
+            </if>
+            , u.phone = #{phone}
+            , u.email = #{email}
+        </set>
+        WHERE s.id = #{storeId}
+        AND user_id = #{userId}
+    </update>
+
+    <!-- 가게 활성화 -->
+    <update id="updateIsActiveByStoreIdAndUserId">
+        UPDATE stores
+        SET is_active = IF(is_active = 1, 0, 1)
+        WHERE id = #{storeId}
+        AND user_id = #{userId}
+    </update>
+
+    <!-- 가게 삭제 -->
+    <delete id="deleteByStoreIdAndUserId">
+        DELETE FROM stores
+        WHERE id = #{storeId}
+        AND user_id = #{userId}
+    </delete>
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.hanipactor.application.user.UserMapper">
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users
+        SET name = #{name},
+        login_id = #{loginId},
+        login_pw = #{loginPw},
+        phone = #{phone},
+        email = #{email},
+        image_path = #{imagePath},
+        role = #{role}
+    </insert>
+
+    <select id="findIdByLoginIdAndRole">
+        SELECT id
+        FROM users
+        WHERE login_id = #{loginId}
+        AND role = #{role}
+        LIMIT 1;
+    </select>
+
+    <select id="findByLoginId">
+        SELECT id, login_pw
+        FROM users
+        WHERE login_id = #{loginId}
+    </select>
+
+    <select id="findRoleByUserId">
+        SELECT role
+        FROM users
+        WHERE id = #{userId}
+    </select>
+
+    <select id="findByUserId">
+        SELECT id, name, login_id,
+        postcode, address, address_detail,
+        phone, email, image_path, role, created
+        FROM users
+        WHERE id = #{userId}
+    </select>
+
+    <select id="findPasswordByUserId">
+        SELECT login_pw
+        FROM users
+        WHERE id = #{userId}
+    </select>
+
+    <update id="update">
+        UPDATE users
+        <trim prefix="SET" suffixOverrides=",">
+            name = #{name},
+            postcode = #{postcode},
+            address = #{address},
+            address_detail = #{addressDetail},
+            phone = #{phone},
+            email = #{email},
+            <if test="imagePath != null and imagePath != ''">
+                image_path = #{imagePath}
+            </if>
+        </trim>
+        WHERE id = #{userId}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE users
+        SET login_pw = #{newLoginPw}
+        WHERE id = #{userId}
+    </update>
+</mapper>
