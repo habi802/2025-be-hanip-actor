@@ -1,13 +1,12 @@
 package kr.co.hanipactor.application.user;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.co.hanipactor.application.user.model.UserJoinReq;
 import kr.co.hanipactor.application.user.model.UserLoginDto;
 import kr.co.hanipactor.application.user.model.UserLoginReq;
 import kr.co.hanipactor.application.user.model.UserLoginRes;
-import kr.co.hanipactor.config.common.model.ResultResponse;
-import kr.co.hanipactor.config.jwt.JwtTokenManager;
+import kr.co.hanipactor.configuration.common.model.ResultResponse;
+import kr.co.hanipactor.configuration.jwt.JwtTokenManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package kr.co.hanipactor.config.security;
+package kr.co.hanipactor.configuration.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

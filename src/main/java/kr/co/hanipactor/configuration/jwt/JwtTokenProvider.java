@@ -1,4 +1,4 @@
-package kr.co.hanipactor.config.jwt;
+package kr.co.hanipactor.configuration.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,8 +6,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import kr.co.hanipactor.config.constants.ConstJwt;
-import kr.co.hanipactor.config.model.JwtUser;
+import kr.co.hanipactor.configuration.constants.ConstJwt;
+import kr.co.hanipactor.configuration.model.JwtUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;

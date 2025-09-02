@@ -1,13 +1,13 @@
-package kr.co.hanipactor.config.jwt;
+package kr.co.hanipactor.configuration.jwt;
 
 
-import kr.co.hanipactor.config.constants.ConstJwt;
+import kr.co.hanipactor.configuration.constants.ConstJwt;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.co.hanipactor.config.model.JwtUser;
-import kr.co.hanipactor.config.model.UserPrincipal;
-import kr.co.hanipactor.config.common.util.CookieUtils;
+import kr.co.hanipactor.configuration.model.JwtUser;
+import kr.co.hanipactor.configuration.model.UserPrincipal;
+import kr.co.hanipactor.configuration.common.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

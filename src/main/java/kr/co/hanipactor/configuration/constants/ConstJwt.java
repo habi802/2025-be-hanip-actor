@@ -1,4 +1,4 @@
-package kr.co.hanipactor.config.constants;
+package kr.co.hanipactor.configuration.constants;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

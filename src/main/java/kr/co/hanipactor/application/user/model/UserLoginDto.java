@@ -1,6 +1,6 @@
 package kr.co.hanipactor.application.user.model;
 
-import kr.co.hanipactor.config.model.JwtUser;
+import kr.co.hanipactor.configuration.model.JwtUser;
 import lombok.Builder;
 import lombok.Getter;
 

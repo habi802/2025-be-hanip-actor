@@ -1,6 +1,6 @@
-package kr.co.hanipactor.config.model;
+package kr.co.hanipactor.configuration.model;
 
-import kr.co.hanipactor.config.enumcode.model.EnumUserRole;
+import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

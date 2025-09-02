@@ -1,4 +1,4 @@
-package kr.co.hanipactor.config.model;
+package kr.co.hanipactor.configuration.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

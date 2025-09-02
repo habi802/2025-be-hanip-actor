@@ -1,7 +1,7 @@
-package kr.co.hanipactor.config.model;
+package kr.co.hanipactor.configuration.model;
 
 
-import kr.co.hanipactor.config.enumcode.model.EnumUserRole;
+import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
