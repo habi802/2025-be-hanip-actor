@@ -36,9 +36,9 @@ public class User extends UpdatedAt {
     @Column(length = 200)
     private String imagePath;
 
-    @Column(nullable = false, length = 2, columnDefinition = "varchar(2)")
+    @Column(nullable = false, length = 2, columnDefinition = "VARCHAR(2)")
     private EnumUserRole role;
 
-    @Column(nullable = false, length = 2, columnDefinition = "varchar(2) default '01'")
+    @Column(nullable = false, length = 2, columnDefinition = "VARCHAR(2) DEFAULT '01'")
     private SignInProviderType providerType;
 }
