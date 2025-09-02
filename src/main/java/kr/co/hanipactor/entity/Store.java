@@ -13,6 +13,7 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "stores")
 public class Store extends UpdatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
