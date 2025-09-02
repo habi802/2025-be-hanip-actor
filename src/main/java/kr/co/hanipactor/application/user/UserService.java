@@ -50,8 +50,8 @@ public class UserService {
         if (res == null || !BCrypt.checkpw(req.getLoginPw(), res.getLoginPw())) {
             return null;
         }
-        Integer storeId = storeMapper.findStoreIdByUserId(res.getId());
-        res.setStoreId(storeId == null ? 0 : storeId);
+        // Integer storeId = storeMapper.findStoreIdByUserId(res.getId());
+        res.setStoreId(0); // (storeId == null ? 0 : storeId);
         String role = userMapper.findRoleByUserId(res.getId());
         res.setRole(role);
 
