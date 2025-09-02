@@ -23,7 +23,7 @@ public class User extends UpdatedAt {
     @Comment("이름")
     private String name;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, unique = true)
     @Comment("로그인 아이디")
     private String loginId;
 
