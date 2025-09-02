@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 @Getter
 @Builder
@@ -19,26 +20,34 @@ public class User extends UpdatedAt {
     private long id;
 
     @Column(nullable = false, length = 20)
+    @Comment("이름")
     private String name;
 
     @Column(nullable = false, length = 50)
+    @Comment("로그인 아이디")
     private String loginId;
 
     @Column(nullable = false, length = 200)
+    @Comment("로그인 비밀번호")
     private String loginPw;
 
     @Column(length = 13)
+    @Comment("전화번호")
     private String phone;
 
     @Column(length = 50)
+    @Comment("이메일")
     private String email;
 
     @Column(length = 200)
+    @Comment("프로필 이미지")
     private String imagePath;
 
     @Column(nullable = false, length = 2, columnDefinition = "VARCHAR(2)")
+    @Comment("회원 분류(01: 고객, 02: 사장, 03: 배달원, 04: 관리자)")
     private EnumUserRole role;
 
     @Column(nullable = false, length = 2, columnDefinition = "VARCHAR(2) DEFAULT '01'")
+    @Comment("가입 유형(01: 일반, 02: 카카오, 03: 네이버)")
     private SignInProviderType providerType;
 }
