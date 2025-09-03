@@ -85,8 +85,6 @@ public class UserService {
                             .tel(req.getStoreJoinReq().getTel())
                             .ownerName(req.getStoreJoinReq().getOwnerName())
                             .openDate(req.getStoreJoinReq().getOpenDate())
-                            .closeTime("23:00:00")
-
                             .build();
 
                     storeRepository.save(store);
