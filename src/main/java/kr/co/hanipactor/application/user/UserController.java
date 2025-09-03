@@ -46,6 +46,7 @@ public class UserController {
     public ResponseEntity<ResultResponse<UserLoginRes>> login(@RequestBody UserLoginReq req, HttpServletResponse response) {
         UserLoginDto userLoginDto = userService.login(req);
         jwtTokenManager.issue(response, userLoginDto.getJwtUser());
+        log.info("userLoginDto: {}", userLoginDto.getJwtUser());
         if (userLoginDto == null) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)

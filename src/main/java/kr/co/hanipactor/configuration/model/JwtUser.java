@@ -3,18 +3,14 @@ package kr.co.hanipactor.configuration.model;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
+@ToString
 @AllArgsConstructor
 public class JwtUser {
     private long signedUserId;
-    private List<EnumUserRole> roles; //인가 처리 때 사용
-
-    /*
-    role 이름은 ROLE_아무거나
-
-    ROLE_USER, ROLE_ADMIN, ROLE_MANAGER, ROLE_LEVEL_1 ...
-     */
+    private EnumUserRole role; //인가 처리 때 사용
 }

@@ -1,5 +1,7 @@
 package kr.co.hanipactor.application.user.model;
 
+import kr.co.hanipactor.application.store.model.StoreJoinReq;
+import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -18,5 +20,6 @@ public class UserJoinReq {
     private String phone;
     private String email;
     private String imagePath;
-    private String role;
+    private EnumUserRole role;
+    private final StoreJoinReq storeJoinReq;
 }
