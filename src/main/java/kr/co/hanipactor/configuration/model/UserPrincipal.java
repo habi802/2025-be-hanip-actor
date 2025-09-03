@@ -20,15 +20,10 @@ public class UserPrincipal implements UserDetails {
 
     public UserPrincipal(JwtUser jwtUser) {
         this.jwtUser = jwtUser;
-        List<SimpleGrantedAuthority> list = new ArrayList<>();
-        for(EnumUserRole role : jwtUser.getRoles()){
-            String roleName = String.format("ROLE_%s", role.name());
-            log.info("roleName: {}", roleName);
-            list.add(new SimpleGrantedAuthority(roleName));
-        }
-        this.authorities = list;
-
-        //this.authorities = roles.stream().map(role -> new SimpleGrantedAuthority(String.format("ROLE_%s", role.name()))).toList();
+        EnumUserRole role = jwtUser.getRole();
+        String roleName = String.format("ROLE_%s", role.name());
+        log.info("roleName: {}", roleName);
+        this.authorities = List.of(new SimpleGrantedAuthority(roleName));
     }
 
     public Long getSignedUserId() {
