@@ -44,4 +44,11 @@ public class MenuOption extends UpdatedAt {
     @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT '0'")
     @Comment("필수 선택 여부(0: 선택, 1: 필수 선택)")
     private Integer isRequired;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.isRequired == null) {
+            this.isRequired = 0;
+        }
+    }
 }

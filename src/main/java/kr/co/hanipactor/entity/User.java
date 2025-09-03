@@ -51,4 +51,11 @@ public class User extends UpdatedAt {
     @Column(nullable = false, length = 2, columnDefinition = "VARCHAR(2) DEFAULT '01'")
     @Comment("가입 유형(01: 일반, 02: 카카오, 03: 네이버)")
     private SignInProviderType providerType;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.providerType == null) {
+            this.providerType = SignInProviderType.LOCAL;
+        }
+    }
 }

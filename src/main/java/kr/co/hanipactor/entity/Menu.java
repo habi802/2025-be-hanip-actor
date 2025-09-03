@@ -56,4 +56,14 @@ public class Menu extends UpdatedAt {
     @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT '0'")
     @Comment("숨김 여부(0: 숨김, 1: 공개)")
     private Integer isHide;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.isSoldOut == null) {
+            this.isSoldOut = 0;
+        }
+        if (this.isHide == null) {
+            this.isHide = 0;
+        }
+    }
 }
