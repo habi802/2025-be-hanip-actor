@@ -70,15 +70,15 @@ public class Store extends UpdatedAt {
 
     @Column(nullable = false, columnDefinition = "INT(11) DEFAULT '0'")
     @Comment("최소 배달 요금")
-    private int minDeliveryFee;
+    private Integer minDeliveryFee;
 
     @Column(nullable = false, columnDefinition = "INT(11) DEFAULT '0'")
     @Comment("최대 배달 요금")
-    private int maxDeliveryFee;
+    private Integer maxDeliveryFee;
 
     @Column(nullable = false, columnDefinition = "INT(11) DEFAULT '0'")
     @Comment("최소 주문 금액")
-    private int minAmount;
+    private Integer minAmount;
 
     @Column(nullable = false, columnDefinition = "TIME DEFAULT '11:00:00'")
     @Comment("영업 시작 시간")
@@ -107,4 +107,32 @@ public class Store extends UpdatedAt {
     @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT '0'")
     @Comment("활성화 여부(관리자 허용, 0: 비활성화, 1: 활성화)")
     private Integer isActive;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.minDeliveryFee == null) {
+            this.minDeliveryFee = 0;
+        }
+        if (this.maxDeliveryFee == null) {
+            this.maxDeliveryFee = 0;
+        }
+        if (this.minAmount == null) {
+            this.minAmount = 0;
+        }
+        if (this.openTime == null) {
+            this.openTime = "11:00:00";
+        }
+        if (this.closeTime == null) {
+            this.closeTime = "23:00:00";
+        }
+        if (this.isOpen == null) {
+            this.isOpen = 0;
+        }
+        if (this.isPickUp == null) {
+            this.isPickUp = 0;
+        }
+        if (this.isActive == null) {
+            this.isActive = 0;
+        }
+    }
 }

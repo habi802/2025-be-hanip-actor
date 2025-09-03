@@ -1,6 +1,7 @@
 package kr.co.hanipactor.entity;
 
 import jakarta.persistence.*;
+import kr.co.hanipactor.configuration.security.model.SignInProviderType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,4 +42,11 @@ public class UserAddress extends UpdatedAt {
     @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT '0'")
     @Comment("기본 주소 여부(0: 기본 주소 아님, 1: 기본 주소)")
     private Integer isMain;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.isMain == null) {
+            this.isMain = 0;
+        }
+    }
 }
