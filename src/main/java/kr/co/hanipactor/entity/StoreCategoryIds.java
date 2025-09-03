@@ -5,11 +5,13 @@ import jakarta.persistence.Embeddable;
 import kr.co.hanipactor.configuration.enumcode.model.EnumStoreCategory;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Comment;
 
 import java.io.Serializable;
 
 @Getter
+@Setter
 @Embeddable
 @EqualsAndHashCode
 public class StoreCategoryIds implements Serializable {

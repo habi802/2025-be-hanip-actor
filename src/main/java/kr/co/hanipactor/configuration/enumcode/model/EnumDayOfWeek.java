@@ -23,7 +23,7 @@ public enum EnumDayOfWeek implements EnumMapperType {
     @Converter(autoApply = true)
     public static class CodeConverter extends AbstractEnumCodeConverter<EnumDayOfWeek> {
         public CodeConverter() {
-            super(EnumDayOfWeek.class, false);
+            super(EnumDayOfWeek.class, true);
         }
     }
 }
