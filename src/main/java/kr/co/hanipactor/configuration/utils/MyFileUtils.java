@@ -1,4 +1,4 @@
-package kr.co.hanipactor.configuration.common.util;
+package kr.co.hanipactor.configuration.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

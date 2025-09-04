@@ -1,4 +1,4 @@
-package kr.co.hanipactor.configuration.common.util;
+package kr.co.hanipactor.configuration.utils;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
