@@ -30,6 +30,7 @@ public class MenuOption extends UpdatedAt {
     @JoinColumn(name = "parent_id")
     @Comment("상위 옵션 아이디")
     private MenuOption parentId;
+
     @OneToMany(mappedBy = "parentId")
     private List<MenuOption> children = new ArrayList<>();
 

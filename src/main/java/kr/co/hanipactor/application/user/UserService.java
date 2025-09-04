@@ -7,7 +7,7 @@ import kr.co.hanipactor.application.storecategory.StoreCategoryRepository;
 import kr.co.hanipactor.application.user.model.*;
 import kr.co.hanipactor.application.useraddress.UserAddressRepository;
 import kr.co.hanipactor.application.useraddress.model.UserAddressPostReq;
-import kr.co.hanipactor.configuration.common.util.ImgUploadManager;
+import kr.co.hanipactor.configuration.utils.ImgUploadManager;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.JwtUser;
 import kr.co.hanipactor.configuration.security.model.SignInProviderType;
@@ -19,8 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.time.LocalTime;
 
 @Slf4j
 @Service

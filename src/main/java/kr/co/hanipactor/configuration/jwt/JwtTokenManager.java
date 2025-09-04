@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.co.hanipactor.configuration.model.JwtUser;
 import kr.co.hanipactor.configuration.model.UserPrincipal;
-import kr.co.hanipactor.configuration.common.util.CookieUtils;
+import kr.co.hanipactor.configuration.utils.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
