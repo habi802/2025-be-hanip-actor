@@ -2,14 +2,12 @@ package kr.co.hanipactor.application.user;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.co.hanipactor.application.user.model.UserJoinReq;
-import kr.co.hanipactor.application.user.model.UserLoginDto;
-import kr.co.hanipactor.application.user.model.UserLoginReq;
-import kr.co.hanipactor.application.user.model.UserLoginRes;
+import kr.co.hanipactor.application.user.model.*;
 import kr.co.hanipactor.configuration.jwt.JwtTokenManager;
 import kr.co.hanipactor.configuration.model.ResultResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,4 +65,11 @@ public class UserController {
         return ResponseEntity.ok(ResultResponse.success("토큰 재발급 성공"));
     }
 
+    // 유저 전체 조회
+    @GetMapping
+    public ResponseEntity<ResultResponse<?>> allUser(@RequestBody UserAllGetReq req) {
+        log.info("allUser req: {}", req);
+        Page<UserAllGetRes> result = userService.allUser(req);
+        return ResponseEntity.ok(ResultResponse.success(result));
+    }
 }

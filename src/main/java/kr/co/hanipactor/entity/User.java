@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -51,6 +54,9 @@ public class User extends UpdatedAt {
     @Column(nullable = false, length = 2, columnDefinition = "VARCHAR(2) DEFAULT '01'")
     @Comment("가입 유형(01: 일반, 02: 카카오, 03: 네이버)")
     private SignInProviderType providerType;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserAddress> addresses = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
