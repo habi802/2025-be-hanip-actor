@@ -2,7 +2,7 @@ package kr.co.hanipactor.application.user;
 
 import jakarta.transaction.Transactional;
 import kr.co.hanipactor.application.store.StoreMapper;
-import kr.co.hanipactor.application.store.model.StoreRepository;
+import kr.co.hanipactor.application.store.StoreRepository;
 import kr.co.hanipactor.application.storecategory.StoreCategoryRepository;
 import kr.co.hanipactor.application.user.model.*;
 import kr.co.hanipactor.application.useraddress.UserAddressRepository;
@@ -15,8 +15,10 @@ import kr.co.hanipactor.entity.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalTime;
 
@@ -29,6 +31,7 @@ public class UserService {
     private final UserAddressRepository userAddressRepository;
     private final StoreRepository storeRepository;
     private final StoreCategoryRepository storeCategoryRepository;
+    private final StoreMapper storeMapper;
     private final ImgUploadManager imgUploadManager;
 
     @Transactional
@@ -67,7 +70,7 @@ public class UserService {
             result += 1;
 
             switch (req.getRole()) {
-                // 사장일 경우 : 사장 가게 주소 저장 ( 단일 )
+                // 사장일 경우 : 사장 가게 주소 및 정보 저장 ( 단일 )
                 case OWNER -> {
                     String savedFileName = null;
                     if(pic != null) {
@@ -129,10 +132,9 @@ public class UserService {
 
         // 비밀번호 일치 확인
         if (user == null || !BCrypt.checkpw(req.getLoginPw(), user.getLoginPw())) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "아이디/비밀번호를 확인해 주세요.");
         }
-        // Integer storeId = storeMapper.findStoreIdByUserId(res.getId());
-        // (storeId == null ? 0 : storeId);
+        Integer storeId = storeMapper.findStoreIdByUserId(user.getId());
 
         EnumUserRole role = user.getRole();
 
@@ -140,7 +142,7 @@ public class UserService {
 
         UserLoginRes userLoginRes = UserLoginRes.builder()
                 .id(user.getId())
-                .storeId(0)
+                .storeId(user.getRole() == EnumUserRole.CUSTOMER ? 0 : storeId)
                 .role(role)
                 .loginPw(user.getLoginPw())
                 .build();

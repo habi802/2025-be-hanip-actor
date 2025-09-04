@@ -1,5 +1,6 @@
 package kr.co.hanipactor.application.user;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.co.hanipactor.application.user.model.UserJoinReq;
 import kr.co.hanipactor.application.user.model.UserLoginDto;
@@ -16,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -51,8 +52,19 @@ public class UserController {
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(ResultResponse.fail(401, "아이디나 비밀번호가 올바르지 않습니다."));
         }
-
         return ResponseEntity.ok(ResultResponse.success(userLoginDto.getUserLoginRes()));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ResultResponse<?>> logout(HttpServletResponse response) {
+        jwtTokenManager.signOut(response);
+        return ResponseEntity.ok(ResultResponse.success("로그아웃 성공"));
+    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<ResultResponse<?>> reissue(HttpServletResponse response, HttpServletRequest request) {
+        jwtTokenManager.reissue(request, response);
+        return ResponseEntity.ok(ResultResponse.success("토큰 재발급 성공"));
     }
 
 }
