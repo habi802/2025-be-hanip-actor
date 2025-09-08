@@ -1,6 +1,7 @@
 package kr.co.hanipactor.application.menu;
 
 import kr.co.hanipactor.application.menu.model.MenuPostReq;
+import kr.co.hanipactor.application.menu.model.MenuGetItemReq;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.ResultResponse;
 import kr.co.hanipactor.configuration.model.UserPrincipal;
@@ -9,11 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -48,5 +48,11 @@ public class MenuController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResultResponse.fail(500, "서버 오류가 발생했습니다."));
         }
+    }
+
+    // 주문 내역 메뉴 조회
+    @GetMapping
+    public ResponseEntity<ResultResponse<?>> getOrderMenu(@ModelAttribute MenuGetItemReq req) {
+        return null;
     }
 }
