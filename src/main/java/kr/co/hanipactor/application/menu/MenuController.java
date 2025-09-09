@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,6 +57,18 @@ public class MenuController {
                 ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .body(ResultResponse.fail(400, "등록된 메뉴가 없습니다."))
                 : ResponseEntity.ok(ResultResponse.success(result));
+    }
+
+    // 메뉴 수정
+
+    // 메뉴 품절 여부, 숨김 여부 변경
+    @PatchMapping
+    public ResponseEntity<ResultResponse<?>> patchMenu(@RequestBody MenuPatchReq req) {
+        int result = menuService.patchMenu(req);
+        return result == 0
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(ResultResponse.fail(400, "등록되지 않은 메뉴입니다."))
+                : ResponseEntity.ok(ResultResponse.success("메뉴가 수정되었습니다."));
     }
 
     // 가게 메뉴 상세 조회

@@ -150,9 +150,22 @@ public class MenuService {
 
     // 메뉴 수정
 
-    // 메뉴 숨김 여부 변경
+    // 메뉴 품절 여부, 숨김 여부 변경
+    @Transactional
+    public int patchMenu(MenuPatchReq req) {
+        Menu menu = menuRepository.findById(req.getMenuId()).orElse(null);
+        if (menu == null) {
+            return 0;
+        }
 
-    // 메뉴 품절 여부 변경
+        if (req.getIsHide() != null) {
+            menu.setIsHide(req.getIsHide());
+        }
+        if (req.getIsSoldOut() != null) {
+            menu.setIsSoldOut(req.getIsSoldOut());
+        }
+        return 1;
+    }
 
     // 메뉴 삭제
     @Transactional
