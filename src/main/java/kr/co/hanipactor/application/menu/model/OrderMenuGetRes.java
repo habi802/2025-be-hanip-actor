@@ -13,6 +13,7 @@ import java.util.List;
 public class OrderMenuGetRes {
     private Long menuId;
     private String name;
+    private int price;
     private List<Option> options;
 
     // 메뉴의 옵션
@@ -22,6 +23,7 @@ public class OrderMenuGetRes {
     public static class Option {
         private Long optionId;
         private String comment;
+        private int price;
         // 옵션의 하위 옵션
         private List<Option> children;
     }
