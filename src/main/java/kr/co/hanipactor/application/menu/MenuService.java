@@ -82,7 +82,7 @@ public class MenuService {
     }
 
     // 가게 메뉴 조회
-    public List<MenuListGetRes> getMenuList(long storeId) {
+    public List<MenuListGetRes> getMenuList(Long storeId) {
         // 가게 id를 가진 메뉴 조회 후 메뉴 종류 별로 그룹핑
         List<Menu> menus = menuRepository.findByStore_Id(storeId);
         Map<EnumMenuType, List<Menu>> sortedMenus = menus.stream()
@@ -95,12 +95,12 @@ public class MenuService {
                                        .menuType(menuType.getValue())
                                        .menus(sortedMenus.get(menuType).stream()
                                                                        .map(menu -> MenuListGetRes.Menu.builder()
-                                                                                                   .menuId(menu.getId())
-                                                                                                   .name(menu.getName())
-                                                                                                   .price(menu.getPrice())
-                                                                                                   .comment(menu.getComment())
-                                                                                                   .imagePath(menu.getImagePath())
-                                                                                                   .build())
+                                                                                                       .menuId(menu.getId())
+                                                                                                       .name(menu.getName())
+                                                                                                       .price(menu.getPrice())
+                                                                                                       .comment(menu.getComment())
+                                                                                                       .imagePath(menu.getImagePath())
+                                                                                                       .build())
                                                                        .toList())
                                        .build();
 
@@ -129,12 +129,12 @@ public class MenuService {
                                                                                      .comment(option.getComment())
                                                                                      .price(option.getPrice())
                                                                                      .children(option.getChildren().stream()
-                                                                                             .map(child -> MenuGetRes.Option.builder()
-                                                                                                                            .optionId(child.getId())
-                                                                                                                            .comment(child.getComment())
-                                                                                                                            .price(child.getPrice())
-                                                                                                                            .build())
-                                                                                             .toList())
+                                                                                                                   .map(child -> MenuGetRes.Option.builder()
+                                                                                                                                                  .optionId(child.getId())
+                                                                                                                                                  .comment(child.getComment())
+                                                                                                                                                  .price(child.getPrice())
+                                                                                                                                                  .build())
+                                                                                                                   .toList())
                                                                                      .build())
                                                      .toList();
 
@@ -146,6 +146,62 @@ public class MenuService {
                          .imagePath(menu.getImagePath())
                          .options(options)
                          .build();
+    }
+
+    // 메뉴 수정
+    @Transactional
+    public int updateMenu(MenuPutReq req) {
+        // 1. 입력한 id를 가진 메뉴가 없을 경우 null 리턴
+        Menu menu = menuRepository.findById(req.getMenuId()).orElse(null);
+        if (menu == null) {
+            return 0;
+        }
+
+        // 2. 기본 정보 수정
+        menu.setName(req.getName());
+        menu.setPrice(req.getPrice());
+        menu.setComment(req.getComment());
+        EnumMenuType menuType = EnumMenuType.fromCode(req.getMenuType());
+        menu.setMenuType(menuType);
+
+        // 3. 이미지 수정
+
+
+        // 4. 옵션 수정
+        List<MenuOption> menuOptions = menuOptionRepository.findByMenu_Id(menu.getId());
+
+        // 하위 옵션 수정
+
+        return 1;
+    }
+
+    // 메뉴 품절 여부, 숨김 여부 변경
+    @Transactional
+    public int patchMenu(MenuPatchReq req) {
+        Menu menu = menuRepository.findById(req.getMenuId()).orElse(null);
+        if (menu == null) {
+            return 0;
+        }
+
+        if (req.getIsHide() != null) {
+            menu.setIsHide(req.getIsHide());
+        }
+        if (req.getIsSoldOut() != null) {
+            menu.setIsSoldOut(req.getIsSoldOut());
+        }
+        return 1;
+    }
+
+    // 메뉴 삭제
+    @Transactional
+    public int deleteMenu(Long menuId) {
+        Menu menu = menuRepository.findById(menuId).orElse(null);
+        if (menu == null) {
+            return 0;
+        }
+
+        menuRepository.deleteById(menuId);
+        return 1;
     }
 
     // 주문 내역 메뉴 조회
@@ -202,6 +258,7 @@ public class MenuService {
                                                        .menuId(menu.getId())
                                                        .name(menu.getName())
                                                        .price(menu.getPrice())
+                                                       .imagePath(menu.getImagePath())
                                                        .options(options)
                                                        .build();
 
