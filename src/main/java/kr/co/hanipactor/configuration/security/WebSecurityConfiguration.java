@@ -37,16 +37,11 @@ public class WebSecurityConfiguration {
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(req -> req
                         // 인증 없이 허용할 API들
-                        .requestMatchers("/api/user/login", "/api/user/join").permitAll()
+                        .requestMatchers("/api/user/login", "/api/user/join", "/api/store").permitAll()
 
                         // 인증이 필요한 API들
                         .requestMatchers(HttpMethod.POST, "/api/feed").hasAnyRole(EnumUserRole.CUSTOMER.name())
-                        .requestMatchers("/api/feed",
-                                "/api/feed/like",
-                                "/api/feed/comment",
-                                "/api/user/follow",
-                                "/api/user/profile",
-                                "/api/user/profile/pic"
+                        .requestMatchers("/api/feed"
                         ).authenticated()
 
                         // 그 외는 모두 허용
