@@ -3,6 +3,7 @@ package kr.co.hanipactor.application.menu;
 import jakarta.transaction.Transactional;
 import kr.co.hanipactor.application.menu.model.MenuGetRes;
 import kr.co.hanipactor.application.menu.model.MenuPostReq;
+import kr.co.hanipactor.application.menu.model.OrderMenuGetReq;
 import kr.co.hanipactor.application.menu.model.OrderMenuGetRes;
 import kr.co.hanipactor.application.menuoption.MenuOptionRepository;
 import kr.co.hanipactor.application.menuoption.model.MenuOptionPostReq;
@@ -113,10 +114,10 @@ public class MenuService {
     }
 
     // 주문 내역 메뉴 조회
-    public List<OrderMenuGetRes> getOrderMenu(List<Long> menuIds, List<Long> optionIds) {
+    public List<OrderMenuGetRes> getOrderMenu(OrderMenuGetReq req) {
         // Action 쪽에서 보낸 menuId, optionId를 가진 메뉴, 메뉴 옵션 조회
-        List<Menu> menus = menuRepository.findAllById(menuIds);
-        List<MenuOption> menuOptions = menuOptionRepository.findAllById(optionIds);
+        List<Menu> menus = menuRepository.findAllById(req.getMenuIds());
+        List<MenuOption> menuOptions = menuOptionRepository.findAllById(req.getOptionIds());
 
         // 메뉴 옵션을 상위 옵션->하위 옵션으로 보여질 수 있게 정렬
         Map<Long, MenuOption> menuOptionMap = menuOptions.stream()
