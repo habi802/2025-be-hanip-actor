@@ -15,9 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -150,7 +148,7 @@ public class MenuService {
 
     // 메뉴 수정
     @Transactional
-    public int updateMenu(MenuPutReq req) {
+    public int updateMenu(MenuPutReq req, MultipartFile menuImage) {
         // 1. 입력한 id를 가진 메뉴가 없을 경우 null 리턴
         Menu menu = menuRepository.findById(req.getMenuId()).orElse(null);
         if (menu == null) {
@@ -164,13 +162,90 @@ public class MenuService {
         EnumMenuType menuType = EnumMenuType.fromCode(req.getMenuType());
         menu.setMenuType(menuType);
 
-        // 3. 이미지 수정
+        // 3. 메뉴 이미지 수정
+        if (menuImage != null) {
 
+        }
 
         // 4. 옵션 수정
+        // 기존에 있었던 옵션을 가져옴
         List<MenuOption> menuOptions = menuOptionRepository.findByMenu_Id(menu.getId());
+        Map<Long, MenuOption> existingOptions = menuOptions.stream()
+                                                           .collect(Collectors.toMap(MenuOption::getId, option -> option));
+        List<MenuOption> updateOptions = new ArrayList<>();
+        for (MenuPutReq.Option optionReq : req.getOptions()) {
+            // 4-1. 상위 옵션 수정
+            MenuOption option;
 
-        // 하위 옵션 수정
+            if (optionReq.getOptionId() != null && existingOptions.containsKey(optionReq.getOptionId())) {
+                // 기존 상위 옵션 수정
+                option = existingOptions.get(optionReq.getOptionId());
+
+                option.setComment(optionReq.getComment());
+                option.setIsRequired(optionReq.getIsRequired());
+            } else {
+                // 새 상위 옵션 추가
+                option = MenuOption.builder()
+                                   .menu(menu)
+                                   .comment(optionReq.getComment())
+                                   .isRequired(optionReq.getIsRequired())
+                                   .children(new ArrayList<>())
+                                   .build();
+            }
+
+            // 4-2. 하위 옵션 수정
+            // 기존에 있었던 상위 옵션일 경우, 그 상위 옵션의 기존 하위 옵션 리스트를 가져오고,
+            // 새 상위 옵션일 경우, 초기화된 리스트를 가져온다.
+            List<MenuOption> menuSubOptions = Optional.ofNullable(option.getChildren()).orElse(new ArrayList<>());
+            Map<Long, MenuOption> existingSubOptions = menuSubOptions.stream()
+                                                                     .collect(Collectors.toMap(MenuOption::getId, child -> child));
+            List<MenuOption> updateSubOptions = new ArrayList<>();
+            if (optionReq.getSubOptions() != null) {
+                for (MenuPutReq.Option.SubOption subOptionReq : optionReq.getSubOptions()) {
+                    MenuOption subOption;
+                    if (subOptionReq.getOptionId() != null && existingSubOptions.containsKey(subOptionReq.getOptionId())) {
+                        // 기존 하위 옵션 수정
+                        subOption = existingSubOptions.get(subOptionReq.getOptionId());
+
+                        subOption.setComment(subOptionReq.getComment());
+                        subOption.setPrice(subOptionReq.getPrice());
+                    } else {
+                        // 새 하위 옵션 추가
+                        subOption = MenuOption.builder()
+                                              .menu(menu)
+                                              .parent(option)
+                                              .comment(subOptionReq.getComment())
+                                              .price(subOptionReq.getPrice())
+                                              .build();
+                    }
+                    updateSubOptions.add(subOption);
+                }
+            }
+
+            // 상위 옵션의 기존 하위 옵션들을 다 삭제한 후에, 최종 수정된 하위 옵션을 다시 추가함
+            option.getChildren().clear();
+            option.getChildren().addAll(updateSubOptions);
+
+            updateOptions.add(option);
+        }
+
+        // 기존에 있었으나 req에 없었던 옵션은 삭제
+        Set<Long> updateOptionIds = updateOptions.stream()
+                                                 .map(MenuOption::getId)
+                                                 .filter(Objects::nonNull)
+                                                 .collect(Collectors.toSet());
+
+        List<MenuOption> deleteOptions = menuOptions.stream()
+                                                    .filter(option -> !updateOptionIds.contains(option.getId()))
+                                                    .collect(Collectors.toList());
+
+        menuOptionRepository.deleteAll(deleteOptions);
+
+        // 새로 추가된 옵션은 추가
+        List<MenuOption> newOptions = updateOptions.stream()
+                                                   .filter(option -> option.getId() == null)
+                                                   .toList();
+        menuOptionRepository.saveAll(newOptions);
 
         return 1;
     }

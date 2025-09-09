@@ -13,15 +13,19 @@ public class MenuPutReq {
     private int price;
     private String comment;
     private String menuType;
-    private String imagePath;
+    private List<Option> options;
 
+    @Getter
+    @ToString
     public static class Option {
         private Long optionId;
         private String comment;
-        private int price;
-        private List<subOption> subOptions;
+        private Integer isRequired;
+        private List<SubOption> subOptions;
 
-        public static class subOption {
+        @Getter
+        @ToString
+        public static class SubOption {
             private Long optionId;
             private String comment;
             private int price;
