@@ -1,7 +1,7 @@
 package kr.co.hanipactor.application.menu;
 
 import kr.co.hanipactor.application.menu.model.MenuPostReq;
-import kr.co.hanipactor.application.menu.model.MenuGetItemReq;
+import kr.co.hanipactor.application.menu.model.OrderMenuGetRes;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.ResultResponse;
 import kr.co.hanipactor.configuration.model.UserPrincipal;
@@ -13,7 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -52,7 +52,9 @@ public class MenuController {
 
     // 주문 내역 메뉴 조회
     @GetMapping
-    public ResponseEntity<ResultResponse<?>> getOrderMenu(@ModelAttribute MenuGetItemReq req) {
-        return null;
+    public ResponseEntity<ResultResponse<?>> getOrderMenu(@RequestParam(name = "menuId") List<Long> menuIds,
+                                                          @RequestParam(name = "optionId") List<Long> optionIds) {
+        List<OrderMenuGetRes> result = menuService.getOrderMenu(menuIds, optionIds);
+        return ResponseEntity.ok(ResultResponse.success(result));
     }
 }

@@ -29,9 +29,9 @@ public class MenuOption extends UpdatedAt {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     @Comment("상위 옵션 아이디")
-    private MenuOption parentId;
+    private MenuOption parent;
 
-    @OneToMany(mappedBy = "parentId")
+    @OneToMany(mappedBy = "parent")
     private List<MenuOption> children = new ArrayList<>();
 
     @Column(nullable = false, length = 50)
