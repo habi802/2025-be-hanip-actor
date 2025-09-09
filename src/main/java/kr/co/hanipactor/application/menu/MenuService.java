@@ -118,11 +118,13 @@ public class MenuService {
                                                                 .map(option -> OrderMenuGetRes.Option.builder()
                                                                                                      .optionId(option.getId())
                                                                                                      .comment(option.getComment())
+                                                                                                     .price(option.getPrice())
                                                                                                      .children(option.getChildren().stream()
                                                                                                                                    // 하위 옵션 담는 거
                                                                                                                                    .map(child -> OrderMenuGetRes.Option.builder()
                                                                                                                                                                        .optionId(child.getId())
                                                                                                                                                                        .comment(child.getComment())
+                                                                                                                                                                       .price(child.getPrice())
                                                                                                                                                                        .build())
                                                                                                                                    .toList())
                                                                                                      .build())
@@ -132,6 +134,7 @@ public class MenuService {
             OrderMenuGetRes orderMenu = OrderMenuGetRes.builder()
                                                        .menuId(menu.getId())
                                                        .name(menu.getName())
+                                                       .price(menu.getPrice())
                                                        .options(options)
                                                        .build();
 
