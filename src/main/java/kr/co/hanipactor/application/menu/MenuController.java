@@ -59,10 +59,21 @@ public class MenuController {
                 : ResponseEntity.ok(ResultResponse.success(result));
     }
 
+    // 가게 메뉴 상세 조회
+    @GetMapping("/{menuId}")
+    public ResponseEntity<ResultResponse<?>> getMenu(@PathVariable Long menuId) {
+        MenuGetRes result = menuService.getMenu(menuId);
+        return result == null
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ResultResponse.fail(400, "등록되지 않은 메뉴입니다."))
+                : ResponseEntity.ok(ResultResponse.success(result));
+    }
+
     // 메뉴 수정
     @PutMapping
-    public ResponseEntity<ResultResponse<?>> updateMenu(@RequestBody MenuPutReq req) {
-        int result = menuService.updateMenu(req);
+    public ResponseEntity<ResultResponse<?>> updateMenu(@RequestPart MenuPutReq req,
+                                                        @RequestPart(required = false) MultipartFile menuImage) {
+        int result = menuService.updateMenu(req, menuImage);
         return result == 0
                 ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .body(ResultResponse.fail(400, "등록된 메뉴가 없습니다."))
@@ -77,16 +88,6 @@ public class MenuController {
                 ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .body(ResultResponse.fail(400, "등록되지 않은 메뉴입니다."))
                 : ResponseEntity.ok(ResultResponse.success("메뉴가 수정되었습니다."));
-    }
-
-    // 가게 메뉴 상세 조회
-    @GetMapping("/{menuId}")
-    public ResponseEntity<ResultResponse<?>> getMenu(@PathVariable Long menuId) {
-        MenuGetRes result = menuService.getMenu(menuId);
-        return result == null
-                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                .body(ResultResponse.fail(400, "등록되지 않은 메뉴입니다."))
-                : ResponseEntity.ok(ResultResponse.success(result));
     }
 
     // 메뉴 삭제
