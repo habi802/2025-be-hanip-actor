@@ -1,6 +1,8 @@
 package kr.co.hanipactor.application.menu;
 
+import kr.co.hanipactor.application.menu.model.MenuGetRes;
 import kr.co.hanipactor.application.menu.model.MenuPostReq;
+import kr.co.hanipactor.application.menu.model.OrderMenuGetReq;
 import kr.co.hanipactor.application.menu.model.OrderMenuGetRes;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.ResultResponse;
@@ -50,11 +52,17 @@ public class MenuController {
         }
     }
 
-    // 주문 내역 메뉴 조회
+    // 가게 메뉴 조회
     @GetMapping
-    public ResponseEntity<ResultResponse<?>> getOrderMenu(@RequestParam(name = "menuId") List<Long> menuIds,
-                                                          @RequestParam(name = "optionId") List<Long> optionIds) {
-        List<OrderMenuGetRes> result = menuService.getOrderMenu(menuIds, optionIds);
+    public ResponseEntity<ResultResponse<?>> getMenu(@RequestParam Long storeId) {
+        List<MenuGetRes> result = menuService.getMenu(storeId);
+        return ResponseEntity.ok(ResultResponse.success(result));
+    }
+
+    // 주문 내역 메뉴 조회
+    @PostMapping("/order")
+    public ResponseEntity<ResultResponse<?>> getOrderMenu(@RequestBody OrderMenuGetReq req) {
+        List<OrderMenuGetRes> result = menuService.getOrderMenu(req);
         return ResponseEntity.ok(ResultResponse.success(result));
     }
 }
