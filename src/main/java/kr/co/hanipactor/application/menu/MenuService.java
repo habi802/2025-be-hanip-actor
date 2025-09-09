@@ -1,10 +1,7 @@
 package kr.co.hanipactor.application.menu;
 
 import jakarta.transaction.Transactional;
-import kr.co.hanipactor.application.menu.model.MenuGetRes;
-import kr.co.hanipactor.application.menu.model.MenuPostReq;
-import kr.co.hanipactor.application.menu.model.OrderMenuGetReq;
-import kr.co.hanipactor.application.menu.model.OrderMenuGetRes;
+import kr.co.hanipactor.application.menu.model.*;
 import kr.co.hanipactor.application.menuoption.MenuOptionRepository;
 import kr.co.hanipactor.application.menuoption.model.MenuOptionPostReq;
 import kr.co.hanipactor.configuration.enumcode.model.EnumMenuType;
@@ -85,19 +82,19 @@ public class MenuService {
     }
 
     // 가게 메뉴 조회
-    public List<MenuGetRes> getMenu(long storeId) {
+    public List<MenuListGetRes> getMenuList(long storeId) {
         // 가게 id를 가진 메뉴 조회 후 메뉴 종류 별로 그룹핑
         List<Menu> menus = menuRepository.findByStore_Id(storeId);
         Map<EnumMenuType, List<Menu>> sortedMenus = menus.stream()
                                                          .collect(Collectors.groupingBy(Menu::getMenuType));
 
         // 결과값으로 보낼 객체 타입에 맞게 데이터를 넣어준 뒤, 리스트에 담는 과정
-        List<MenuGetRes> result = new ArrayList<>(sortedMenus.size());
+        List<MenuListGetRes> result = new ArrayList<>(sortedMenus.size());
         for (EnumMenuType menuType : sortedMenus.keySet()) {
-            MenuGetRes res = MenuGetRes.builder()
+            MenuListGetRes res = MenuListGetRes.builder()
                                        .menuType(menuType.getValue())
                                        .menus(sortedMenus.get(menuType).stream()
-                                                                       .map(menu -> MenuGetRes.Menu.builder()
+                                                                       .map(menu -> MenuListGetRes.Menu.builder()
                                                                                                    .menuId(menu.getId())
                                                                                                    .name(menu.getName())
                                                                                                    .price(menu.getPrice())
@@ -111,6 +108,44 @@ public class MenuService {
         }
 
         return result;
+    }
+
+    // 가게 메뉴 상세 조회
+    public MenuGetRes getMenu(Long menuId) {
+        // 입력한 id를 가진 메뉴가 없을 경우 null 리턴
+        Menu menu = menuRepository.findById(menuId).orElse(null);
+        if (menu == null) {
+            return null;
+        }
+
+        // 메뉴의 옵션 조회
+        List<MenuOption> menuOptions = menuOptionRepository.findByMenu_Id(menuId);
+
+        // 결과값으로 보낼 객체의 멤버 필드 중 옵션에 하위 옵션까지 담는 과정
+        List<MenuGetRes.Option> options = menuOptions.stream()
+                                                     .filter(option -> option.getParent() == null)
+                                                     .map(option -> MenuGetRes.Option.builder()
+                                                                                     .optionId(option.getId())
+                                                                                     .comment(option.getComment())
+                                                                                     .price(option.getPrice())
+                                                                                     .children(option.getChildren().stream()
+                                                                                             .map(child -> MenuGetRes.Option.builder()
+                                                                                                                            .optionId(child.getId())
+                                                                                                                            .comment(child.getComment())
+                                                                                                                            .price(child.getPrice())
+                                                                                                                            .build())
+                                                                                             .toList())
+                                                                                     .build())
+                                                     .toList();
+
+        return MenuGetRes.builder()
+                         .menuId(menuId)
+                         .name(menu.getName())
+                         .price(menu.getPrice())
+                         .comment(menu.getComment())
+                         .imagePath(menu.getImagePath())
+                         .options(options)
+                         .build();
     }
 
     // 주문 내역 메뉴 조회

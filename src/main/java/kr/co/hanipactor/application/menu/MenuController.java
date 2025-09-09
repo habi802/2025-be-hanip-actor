@@ -1,9 +1,6 @@
 package kr.co.hanipactor.application.menu;
 
-import kr.co.hanipactor.application.menu.model.MenuGetRes;
-import kr.co.hanipactor.application.menu.model.MenuPostReq;
-import kr.co.hanipactor.application.menu.model.OrderMenuGetReq;
-import kr.co.hanipactor.application.menu.model.OrderMenuGetRes;
+import kr.co.hanipactor.application.menu.model.*;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.ResultResponse;
 import kr.co.hanipactor.configuration.model.UserPrincipal;
@@ -54,15 +51,31 @@ public class MenuController {
 
     // 가게 메뉴 조회
     @GetMapping
-    public ResponseEntity<ResultResponse<?>> getMenu(@RequestParam Long storeId) {
-        List<MenuGetRes> result = menuService.getMenu(storeId);
-        return ResponseEntity.ok(ResultResponse.success(result));
+    public ResponseEntity<ResultResponse<?>> getMenuList(@RequestParam Long storeId) {
+        List<MenuListGetRes> result = menuService.getMenuList(storeId);
+        return result == null
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(ResultResponse.fail(400, "등록된 메뉴가 없습니다."))
+                : ResponseEntity.ok(ResultResponse.success(result));
+    }
+
+    // 가게 메뉴 상세 조회
+    @GetMapping("/{menuId}")
+    public ResponseEntity<ResultResponse<?>> getMenu(@PathVariable Long menuId) {
+        MenuGetRes result = menuService.getMenu(menuId);
+        return result == null
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(ResultResponse.fail(400, "등록되지 않은 메뉴입니다."))
+                : ResponseEntity.ok(ResultResponse.success(result));
     }
 
     // 주문 내역 메뉴 조회
     @PostMapping("/order")
     public ResponseEntity<ResultResponse<?>> getOrderMenu(@RequestBody OrderMenuGetReq req) {
         List<OrderMenuGetRes> result = menuService.getOrderMenu(req);
-        return ResponseEntity.ok(ResultResponse.success(result));
+        return result == null
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(ResultResponse.fail(400, "주문한 메뉴가 없습니다."))
+                : ResponseEntity.ok(ResultResponse.success(result));
     }
 }
