@@ -60,6 +60,14 @@ public class MenuController {
     }
 
     // 메뉴 수정
+    @PutMapping
+    public ResponseEntity<ResultResponse<?>> updateMenu(@RequestBody MenuPutReq req) {
+        int result = menuService.updateMenu(req);
+        return result == 0
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(ResultResponse.fail(400, "등록된 메뉴가 없습니다."))
+                : ResponseEntity.ok(ResultResponse.success(result));
+    }
 
     // 메뉴 품절 여부, 숨김 여부 변경
     @PatchMapping

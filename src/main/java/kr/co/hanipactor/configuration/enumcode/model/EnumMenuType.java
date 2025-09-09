@@ -6,6 +6,8 @@ import kr.co.hanipactor.configuration.enumcode.EnumMapperType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+
 @Getter
 @RequiredArgsConstructor
 public enum EnumMenuType implements EnumMapperType {
@@ -22,5 +24,13 @@ public enum EnumMenuType implements EnumMapperType {
         public CodeConverter() {
             super(EnumMenuType.class, false);
         }
+    }
+
+    // 입력 받은 코드를 가진 enum을 찾아주는 메소드
+    public static EnumMenuType fromCode(String code) {
+        return Arrays.stream(EnumMenuType.values())
+                     .filter(e -> e.code.equals(code))
+                     .findFirst()
+                     .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 코드입니다."));
     }
 }
