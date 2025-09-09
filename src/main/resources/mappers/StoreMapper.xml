@@ -24,6 +24,7 @@
         , COUNT(DISTINCT CONCAT(f.user_id, '_', f.store_id)) AS favorites
         , IFNULL(AVG(r.rating), 0) AS rating
           FROM stores s
+          INNER JOIN store_category sc ON sc.store_id = s.id
           LEFT JOIN favorites f ON s.id = f.store_id
           LEFT JOIN orders o ON s.id = o.store_id
           LEFT JOIN reviews r ON o.id = r.order_id

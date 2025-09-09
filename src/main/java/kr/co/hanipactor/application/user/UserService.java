@@ -7,6 +7,7 @@ import kr.co.hanipactor.application.storecategory.StoreCategoryRepository;
 import kr.co.hanipactor.application.user.model.*;
 import kr.co.hanipactor.application.useraddress.UserAddressRepository;
 import kr.co.hanipactor.application.useraddress.model.UserAddressPostReq;
+import kr.co.hanipactor.configuration.model.ResultResponse;
 import kr.co.hanipactor.configuration.utils.ImgUploadManager;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.JwtUser;
@@ -26,6 +27,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -205,5 +208,19 @@ public class UserService {
         );
 
         return result;
+    }
+
+    public Map<Long, UserGetItem> getUserList(List<Long> userIdList) {
+        List<User> userList = userRepository.findAllById(userIdList);
+
+        return userList.stream().collect(
+                Collectors.toMap( item -> item.getId(),
+                        item -> UserGetItem.builder()
+                                .id(item.getId())
+                                .userNickName(item.getName())
+                                .userPic(item.getImagePath())
+                                .build()
+                )
+        );
     }
 }

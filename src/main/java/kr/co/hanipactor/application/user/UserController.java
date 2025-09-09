@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import kr.co.hanipactor.application.user.model.*;
 import kr.co.hanipactor.configuration.jwt.JwtTokenManager;
 import kr.co.hanipactor.configuration.model.ResultResponse;
+import kr.co.hanipactor.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -71,5 +75,14 @@ public class UserController {
         log.info("allUser req: {}", req);
         Page<UserAllGetRes> result = userService.allUser(req);
         return ResponseEntity.ok(ResultResponse.success(result));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> getUserList(@RequestParam(name = "user_id")List<Long> userIdList) {
+        log.info("userId: {}", userIdList);
+        Map<Long, UserGetItem> result = userService.getUserList(userIdList);
+        return ResponseEntity.ok(
+                new ResultResponse<>(200, String.format("rows: %d", result.size()), result)
+        );
     }
 }

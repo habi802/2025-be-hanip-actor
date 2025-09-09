@@ -1,13 +1,20 @@
 package kr.co.hanipactor.application.store;
 
 
+import kr.co.hanipactor.application.store.model.StoreGetListReq;
+import kr.co.hanipactor.application.store.model.StoreGetListRes;
+import kr.co.hanipactor.configuration.model.ResultResponse;
+import kr.co.hanipactor.configuration.model.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -15,5 +22,15 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class StoreController {
     private final StoreService storeService;
+
+    // 가게 조회
+    @GetMapping
+    public ResponseEntity<ResultResponse<List<StoreGetListRes>>> findAllStore(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                                              @ModelAttribute StoreGetListReq req) {
+        log.info("검색 요청: {}", req);
+        log.info("검색자 확인: {}", userPrincipal.getSignedUserId());
+        List<StoreGetListRes> result = storeService.findAllStore(req);
+        return ResponseEntity.ok(new ResultResponse<>(200, "가게 조회 성공", result));
+    }
 
 }
