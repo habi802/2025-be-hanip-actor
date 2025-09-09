@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -67,6 +68,16 @@ public class MenuController {
                 ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .body(ResultResponse.fail(400, "등록되지 않은 메뉴입니다."))
                 : ResponseEntity.ok(ResultResponse.success(result));
+    }
+
+    // 메뉴 삭제
+    @DeleteMapping("/{menuId}")
+    public ResponseEntity<ResultResponse<?>> deleteMenu(@PathVariable Long menuId) {
+        int result = menuService.deleteMenu(menuId);
+        return result == 0
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(ResultResponse.fail(400, "등록되지 않은 메뉴입니다."))
+                : ResponseEntity.ok(ResultResponse.success("메뉴가 삭제되었습니다."));
     }
 
     // 주문 내역 메뉴 조회

@@ -95,12 +95,12 @@ public class MenuService {
                                        .menuType(menuType.getValue())
                                        .menus(sortedMenus.get(menuType).stream()
                                                                        .map(menu -> MenuListGetRes.Menu.builder()
-                                                                                                   .menuId(menu.getId())
-                                                                                                   .name(menu.getName())
-                                                                                                   .price(menu.getPrice())
-                                                                                                   .comment(menu.getComment())
-                                                                                                   .imagePath(menu.getImagePath())
-                                                                                                   .build())
+                                                                                                       .menuId(menu.getId())
+                                                                                                       .name(menu.getName())
+                                                                                                       .price(menu.getPrice())
+                                                                                                       .comment(menu.getComment())
+                                                                                                       .imagePath(menu.getImagePath())
+                                                                                                       .build())
                                                                        .toList())
                                        .build();
 
@@ -129,12 +129,12 @@ public class MenuService {
                                                                                      .comment(option.getComment())
                                                                                      .price(option.getPrice())
                                                                                      .children(option.getChildren().stream()
-                                                                                             .map(child -> MenuGetRes.Option.builder()
-                                                                                                                            .optionId(child.getId())
-                                                                                                                            .comment(child.getComment())
-                                                                                                                            .price(child.getPrice())
-                                                                                                                            .build())
-                                                                                             .toList())
+                                                                                                                   .map(child -> MenuGetRes.Option.builder()
+                                                                                                                                                  .optionId(child.getId())
+                                                                                                                                                  .comment(child.getComment())
+                                                                                                                                                  .price(child.getPrice())
+                                                                                                                                                  .build())
+                                                                                                                   .toList())
                                                                                      .build())
                                                      .toList();
 
@@ -146,6 +146,24 @@ public class MenuService {
                          .imagePath(menu.getImagePath())
                          .options(options)
                          .build();
+    }
+
+    // 메뉴 수정
+
+    // 메뉴 숨김 여부 변경
+
+    // 메뉴 품절 여부 변경
+
+    // 메뉴 삭제
+    @Transactional
+    public int deleteMenu(Long menuId) {
+        Menu menu = menuRepository.findById(menuId).orElse(null);
+        if (menu == null) {
+            return 0;
+        }
+
+        menuRepository.deleteById(menuId);
+        return 1;
     }
 
     // 주문 내역 메뉴 조회
