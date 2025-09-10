@@ -6,5 +6,7 @@
         SELECT category
         FROM store_category
         WHERE store_id = #{storeId}
+        GROUP BY store_id
+        ORDER BY store_id DESC
     </select>
 </mapper>

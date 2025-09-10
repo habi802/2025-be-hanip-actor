@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Map;
 
-@FeignClient(name = "${constants.open-feign.review}", configuration = FeignConfiguration.class)
+@FeignClient(name = "HANIP-ACTION", contextId = "reviewClient", configuration = FeignConfiguration.class)
 public interface ReviewClient {
-    @GetMapping("/store-review/{storeId}")
-    ResultResponse<List<ReviewGetRatingRes>> findByStoreIdAllReview(
-            @PathVariable("storeId") Long storeId
-    );
+    @GetMapping("/api/review/store-review/{storeId}")
+    ResultResponse<List<ReviewGetRatingRes>> findByStoreIdAllReview(@PathVariable("storeId") Long storeId);
 }

@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "${constants.open-feign.favorites}", configuration = FeignConfiguration.class)
+@FeignClient(name = "HANIP-ACTION", contextId = "favoriteClient", configuration = FeignConfiguration.class)
 public interface FavoritesClient {
     @GetMapping("/api/feed/count")
     StoreFavoriteRes getStoreFavorites(@RequestParam("storeId") Long storeId,
