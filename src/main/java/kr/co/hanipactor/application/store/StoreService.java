@@ -65,8 +65,13 @@ public class StoreService {
             return 0;
         }
 
-        store.setRating(req.getRating());
-        store.setFavorites(req.getFavorites());
+        if (req.getRating() != null) {
+            store.setRating(req.getRating());
+        }
+
+        if (req.getFavorites() != null) {
+            store.setFavorites(req.getFavorites());
+        }
 
         storeRepository.save(store);
         return 1;
