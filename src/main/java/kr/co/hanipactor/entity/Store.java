@@ -105,8 +105,16 @@ public class Store extends UpdatedAt {
     private Integer isPickUp;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT '0'")
-    @Comment("활성화 여부(관리자 허용, 0: 비활성화, 1: 활성화)")
+    @Comment("영업 승인 여부(관리자 허용, 0: 비활성화, 1: 활성화)")
     private Integer isActive;
+
+    @Column(nullable = false, columnDefinition = "DOUBLE(3, 2) DEFAULT '0'")
+    @Comment("평균 별점")
+    private Double rating;
+
+    @Column(nullable = false, columnDefinition = "INT DEFAULT '0'")
+    @Comment("총 찜 수")
+    private Integer favorites;
 
     @PrePersist
     public void prePersist() {
@@ -133,6 +141,12 @@ public class Store extends UpdatedAt {
         }
         if (this.isActive == null) {
             this.isActive = 0;
+        }
+        if (this.rating == null) {
+            this.rating = 0.0;
+        }
+        if (this.favorites == null) {
+            this.favorites = 0;
         }
     }
 }
