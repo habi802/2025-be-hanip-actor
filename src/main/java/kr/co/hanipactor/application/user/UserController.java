@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import kr.co.hanipactor.application.user.model.*;
 import kr.co.hanipactor.configuration.jwt.JwtTokenManager;
 import kr.co.hanipactor.configuration.model.ResultResponse;
-import kr.co.hanipactor.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.hanipactor.application.storecategory.StoreCategoryMapper">
+    <!-- 가게 상세 조회 -->
+    <select id="findByStoreId">
+        SELECT category
+        FROM store_category
+        WHERE store_id = #{storeId}
+        GROUP BY store_id
+        ORDER BY store_id DESC
+    </select>
+</mapper>

@@ -16,6 +16,9 @@ server:
 constants:
   file:
     upload-directory: D:/hanip/images
+  open-feign:
+    action: HANIP-ACTION
+
   jwt:
     issuer: green502@green.com #토큰 발행자
     bearer-format: JWT

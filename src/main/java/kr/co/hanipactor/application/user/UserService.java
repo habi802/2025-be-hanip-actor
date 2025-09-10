@@ -7,7 +7,6 @@ import kr.co.hanipactor.application.storecategory.StoreCategoryRepository;
 import kr.co.hanipactor.application.user.model.*;
 import kr.co.hanipactor.application.useraddress.UserAddressRepository;
 import kr.co.hanipactor.application.useraddress.model.UserAddressPostReq;
-import kr.co.hanipactor.configuration.model.ResultResponse;
 import kr.co.hanipactor.configuration.utils.ImgUploadManager;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.JwtUser;

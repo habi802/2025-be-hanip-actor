@@ -6,6 +6,8 @@ import kr.co.hanipactor.configuration.enumcode.EnumMapperType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+
 @Getter
 @RequiredArgsConstructor
 public enum EnumStoreCategory implements EnumMapperType {
@@ -29,5 +31,12 @@ public enum EnumStoreCategory implements EnumMapperType {
         public CodeConverter() {
             super(EnumStoreCategory.class, false);
         }
+    }
+
+    public static EnumStoreCategory valueOfCode(String code) {
+        return Arrays.stream(values())
+                .filter(e -> e.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown EnumStoreCategory code: " + code));
     }
 }

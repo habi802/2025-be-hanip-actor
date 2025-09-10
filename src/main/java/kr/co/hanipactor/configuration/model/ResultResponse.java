@@ -1,6 +1,6 @@
 package kr.co.hanipactor.configuration.model;
 
-import kr.co.hanipactor.application.user.UserGetItem;
+import kr.co.hanipactor.application.user.model.UserGetItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
