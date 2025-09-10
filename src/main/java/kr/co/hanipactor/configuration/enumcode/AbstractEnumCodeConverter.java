@@ -26,6 +26,10 @@ public abstract class AbstractEnumCodeConverter<E extends Enum<E> & EnumMapperTy
     // DB에서 Enum 값을 select 할 때 사용
     @Override
     public E convertToEntityAttribute(String dbData) {
+        if (nullable && (dbData == null || dbData.trim().isEmpty())) {
+            return null;
+        }
+
         if (!nullable && StringUtils.isEmpty(dbData) || dbData == null) {
             throw new IllegalArgumentException(String.format("%s(는)은 DB에 Null 혹은 Empty로 저장되어 있습니다.",
                     targetEnumClass.getSimpleName()));

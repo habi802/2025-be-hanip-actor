@@ -2,9 +2,11 @@ package kr.co.hanipactor.application.store;
 
 import kr.co.hanipactor.application.store.model.StoreGetListReq;
 import kr.co.hanipactor.application.store.model.StoreGetListRes;
+import kr.co.hanipactor.application.store.model.StorePatchReq;
 import kr.co.hanipactor.application.storecategory.StoreCategoryMapper;
 import kr.co.hanipactor.configuration.enumcode.model.EnumStoreCategory;
 import kr.co.hanipactor.configuration.model.ResultResponse;
+import kr.co.hanipactor.entity.Store;
 import kr.co.hanipactor.openfegin.favorites.FavoritesClient;
 import kr.co.hanipactor.openfegin.review.ReviewClient;
 import kr.co.hanipactor.openfegin.review.model.ReviewGetRatingRes;
@@ -24,6 +26,7 @@ public class StoreService {
     private final StoreCategoryMapper storeCategoryMapper;
     private final FavoritesClient favoritesClient;
     private final ReviewClient reviewClient;
+    private final StoreRepository storeRepository;
 
     public List<StoreGetListRes> findAllStore(StoreGetListReq req, Long signedUserId) {
         String categoryCode = req.getCategory() != null ? req.getCategory().getCode() : null; // Enum -> String 변환
@@ -54,5 +57,18 @@ public class StoreService {
             }
         }
         return list;
+    }
+
+    public Integer updateRatingAndFavorites(StorePatchReq req) {
+        Store store = storeRepository.findById(req.getId()).orElse(null);
+        if (store == null) {
+            return 0;
+        }
+
+        store.setRating(req.getRating());
+        store.setFavorites(req.getFavorites());
+
+        storeRepository.save(store);
+        return 1;
     }
 }
