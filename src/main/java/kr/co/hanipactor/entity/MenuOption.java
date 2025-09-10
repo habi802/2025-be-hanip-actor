@@ -1,16 +1,14 @@
 package kr.co.hanipactor.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +16,7 @@ import java.util.List;
 public class MenuOption extends UpdatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "menu_id")
@@ -29,9 +27,9 @@ public class MenuOption extends UpdatedAt {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     @Comment("상위 옵션 아이디")
-    private MenuOption parentId;
+    private MenuOption parent;
 
-    @OneToMany(mappedBy = "parentId")
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuOption> children = new ArrayList<>();
 
     @Column(nullable = false, length = 50)

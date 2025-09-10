@@ -1,6 +1,6 @@
 package kr.co.hanipactor.application.menu;
 
-import kr.co.hanipactor.application.menu.model.MenuPostReq;
+import kr.co.hanipactor.application.menu.model.*;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.ResultResponse;
 import kr.co.hanipactor.configuration.model.UserPrincipal;
@@ -9,11 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -48,5 +47,66 @@ public class MenuController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ResultResponse.fail(500, "서버 오류가 발생했습니다."));
         }
+    }
+
+    // 가게 메뉴 조회
+    @GetMapping
+    public ResponseEntity<ResultResponse<?>> getMenuList(@RequestParam Long storeId) {
+        List<MenuListGetRes> result = menuService.getMenuList(storeId);
+        return result == null
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(ResultResponse.fail(400, "등록된 메뉴가 없습니다."))
+                : ResponseEntity.ok(ResultResponse.success(result));
+    }
+
+    // 가게 메뉴 상세 조회
+    @GetMapping("/{menuId}")
+    public ResponseEntity<ResultResponse<?>> getMenu(@PathVariable Long menuId) {
+        MenuGetRes result = menuService.getMenu(menuId);
+        return result == null
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ResultResponse.fail(400, "등록되지 않은 메뉴입니다."))
+                : ResponseEntity.ok(ResultResponse.success(result));
+    }
+
+    // 메뉴 수정
+    @PutMapping
+    public ResponseEntity<ResultResponse<?>> updateMenu(@RequestPart MenuPutReq req,
+                                                        @RequestPart(required = false) MultipartFile menuImage) {
+        int result = menuService.updateMenu(req, menuImage);
+        return result == 0
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(ResultResponse.fail(400, "등록된 메뉴가 없습니다."))
+                : ResponseEntity.ok(ResultResponse.success(result));
+    }
+
+    // 메뉴 품절 여부, 숨김 여부 변경
+    @PatchMapping
+    public ResponseEntity<ResultResponse<?>> patchMenu(@RequestBody MenuPatchReq req) {
+        int result = menuService.patchMenu(req);
+        return result == 0
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(ResultResponse.fail(400, "등록되지 않은 메뉴입니다."))
+                : ResponseEntity.ok(ResultResponse.success("메뉴가 수정되었습니다."));
+    }
+
+    // 메뉴 삭제
+    @DeleteMapping("/{menuId}")
+    public ResponseEntity<ResultResponse<?>> deleteMenu(@PathVariable Long menuId) {
+        int result = menuService.deleteMenu(menuId);
+        return result == 0
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(ResultResponse.fail(400, "등록되지 않은 메뉴입니다."))
+                : ResponseEntity.ok(ResultResponse.success("메뉴가 삭제되었습니다."));
+    }
+
+    // 주문 내역 메뉴 조회
+    @PostMapping("/order")
+    public ResponseEntity<ResultResponse<?>> getOrderMenu(@RequestBody OrderMenuGetReq req) {
+        List<OrderMenuGetRes> result = menuService.getOrderMenu(req);
+        return result == null
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(ResultResponse.fail(400, "주문한 메뉴가 없습니다."))
+                : ResponseEntity.ok(ResultResponse.success(result));
     }
 }
