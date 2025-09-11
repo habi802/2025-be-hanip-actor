@@ -56,13 +56,13 @@ public class StoreSpecification {
     }
 
     // 상호명
-    public static Specification<Store> hasName(String ownerName) {
+    public static Specification<Store> hasOwnerName(String ownerName) {
         return (root, query, cb) -> {
-            if (name == null || name.isEmpty()) {
+            if (ownerName == null || ownerName.isEmpty()) {
                 return null;
             }
 
-            return cb.like(root.get("name"), "%" + name + "%");
+            return cb.like(root.get("ownerName"), "%" + ownerName + "%");
         };
     }
 
