@@ -68,14 +68,6 @@ public class UserController {
         return ResponseEntity.ok(ResultResponse.success("토큰 재발급 성공"));
     }
 
-    // 유저 전체 조회
-    @GetMapping
-    public ResponseEntity<ResultResponse<?>> allUser(@RequestBody UserAllGetReq req) {
-        log.info("allUser req: {}", req);
-        Page<UserAllGetRes> result = userService.allUser(req);
-        return ResponseEntity.ok(ResultResponse.success(result));
-    }
-
     @GetMapping("/search")
     public ResponseEntity<?> getUserList(@RequestParam(name = "user_id")List<Long> userIdList) {
         log.info("userId: {}", userIdList);
