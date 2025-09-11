@@ -3,12 +3,14 @@ package kr.co.hanipactor.application.manager;
 import kr.co.hanipactor.application.manager.specification.UserSpecification;
 import kr.co.hanipactor.application.manager.model.UserAllGetReq;
 import kr.co.hanipactor.application.manager.model.UserAllGetRes;
+import kr.co.hanipactor.application.store.StoreRepository;
 import kr.co.hanipactor.application.user.UserRepository;
 import kr.co.hanipactor.application.user.model.UserLoginDto;
 import kr.co.hanipactor.application.user.model.UserLoginReq;
 import kr.co.hanipactor.application.user.model.UserLoginRes;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.JwtUser;
+import kr.co.hanipactor.entity.Store;
 import kr.co.hanipactor.entity.User;
 import kr.co.hanipactor.entity.UserAddress;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +22,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ManagerService {
     private final UserRepository userRepository;
+    private final StoreRepository storeRepository;
 
     // 관리자 로그인
     public UserLoginDto login(UserLoginReq req) {
@@ -112,5 +117,13 @@ public class ManagerService {
 
     // 가게 상세 조회
 
-    // 가게 영업 승인
+    // 가게 영업 승인 상태 변경
+    @Transactional
+    public void patchIsActiveInStore(List<Long> ids, int isActive) {
+        List<Store> stores = storeRepository.findAllById(ids);
+
+        for (Store store : stores) {
+            store.setIsActive(isActive);
+        }
+    }
 }

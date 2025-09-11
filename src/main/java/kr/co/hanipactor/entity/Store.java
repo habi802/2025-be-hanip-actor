@@ -103,7 +103,7 @@ public class Store extends UpdatedAt {
     private Integer isPickUp;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT '0'")
-    @Comment("영업 승인 여부(관리자 허용, 0: 비활성화, 1: 활성화)")
+    @Comment("영업 승인 여부(관리자 허용, 0: 승인 대기, 1: 승인 완료)")
     private Integer isActive;
 
     @Column(nullable = false, columnDefinition = "DOUBLE(3, 2) DEFAULT '0'")

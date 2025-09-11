@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/hanip-manager/actor")
@@ -56,6 +58,16 @@ public class ManagerController {
     }
 
     // 가게 상세 조회
+    @GetMapping("/store/{storeId}")
+    public ResponseEntity<ResultResponse<?>> getStore(@PathVariable Long storeId) {
+        return null;
+    }
 
-    // 가게 영업 승인
+    // 가게 영업 승인 상태 변경
+    @PatchMapping("/store")
+    public ResponseEntity<ResultResponse<?>> patchIsActiveInStore(@RequestParam(name = "id") List<Long> ids,
+                                                                  @RequestParam int isActive) {
+        managerService.patchIsActiveInStore(ids, isActive);
+        return ResponseEntity.ok(ResultResponse.success(1));
+    }
 }
