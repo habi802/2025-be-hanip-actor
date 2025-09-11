@@ -1,6 +1,7 @@
 package kr.co.hanipactor.application.store;
 
 
+import jakarta.servlet.annotation.MultipartConfig;
 import kr.co.hanipactor.application.store.model.StoreGetListReq;
 import kr.co.hanipactor.application.store.model.StoreGetListRes;
 import kr.co.hanipactor.application.store.model.StoreGetRes;
@@ -8,12 +9,14 @@ import kr.co.hanipactor.application.store.model.StorePatchReq;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.ResultResponse;
 import kr.co.hanipactor.configuration.model.UserPrincipal;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -49,6 +52,16 @@ public class StoreController {
     public ResponseEntity<ResultResponse<StoreGetRes>> findStore(@PathVariable long storeId) {
         StoreGetRes result = storeService.findCustomerStore(storeId);
         return ResponseEntity.ok(new ResultResponse<>(200, "가게 조회 성공", result));
+    }
+
+    // 가게 수정 (사장)
+    @PutMapping
+    public ResponseEntity<ResultResponse<?>> putStore(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                      @RequestPart(required = false) MultipartFile pic) {
+        Long signedUserId = userPrincipal.getSignedUserId();
+        storeService.updateStore(signedUserId, pic);
+
+        return null;
     }
 
     // 좋아요 수 및 별점 평균 가게 수정 (서버 전용 API)
