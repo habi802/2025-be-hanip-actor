@@ -1,23 +1,21 @@
 package kr.co.hanipactor.application.manager.model;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-// 유저 전체 조회용 객체
+// 유저 전체 조회 검색용 객체
 @Getter
-@Builder
 @ToString
-public class UserAllGetRes {
-    private long userId;
-    private String name;
+public class UserListReq {
+    private String startDate;
+    private String endDate;
     private String loginId;
-    private String postcode;
+    private String name;
     private String address;
-    private String addressDetail;
     private String phone;
     private String email;
     private String providerType;
     private String role;
-    private String createdAt;
+    private int pageNumber; // 어디서부터 시작할 건지
+    private int pageSize; // 몇 개를 보여줄 건지
 }
