@@ -1,4 +1,4 @@
-package kr.co.hanipactor.application.user.model;
+package kr.co.hanipactor.application.manager.model;
 
 import lombok.Getter;
 import lombok.ToString;
@@ -16,4 +16,6 @@ public class UserAllGetReq {
     private String email;
     private String providerType;
     private String role;
+    private int pageNumber; // 어디서부터 시작할 건지
+    private int pageSize; // 몇 개를 보여줄 건지
 }

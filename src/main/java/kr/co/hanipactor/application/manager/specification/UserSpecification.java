@@ -1,4 +1,4 @@
-package kr.co.hanipactor.application.user;
+package kr.co.hanipactor.application.manager.specification;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
@@ -10,7 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-// 검색 조건을 리턴하는 메소드가 들어있는 클래스
+// 유저 검색 조건을 리턴하는 메소드가 들어있는 클래스
 public class UserSpecification {
     public static Specification<User> hasStartDate(String startDate) {
         return (root, query, cb) -> {

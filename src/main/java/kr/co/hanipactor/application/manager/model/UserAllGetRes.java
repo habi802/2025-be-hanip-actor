@@ -1,4 +1,4 @@
-package kr.co.hanipactor.application.user.model;
+package kr.co.hanipactor.application.manager.model;
 
 import lombok.Builder;
 import lombok.Getter;
