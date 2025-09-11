@@ -1,9 +1,7 @@
 package kr.co.hanipactor.application.manager;
 
 import jakarta.servlet.http.HttpServletResponse;
-import kr.co.hanipactor.application.manager.model.StoreInManagerRes;
-import kr.co.hanipactor.application.manager.model.UserListReq;
-import kr.co.hanipactor.application.manager.model.UserListRes;
+import kr.co.hanipactor.application.manager.model.*;
 import kr.co.hanipactor.application.user.model.UserLoginDto;
 import kr.co.hanipactor.application.user.model.UserLoginReq;
 import kr.co.hanipactor.application.user.model.UserLoginRes;
@@ -54,7 +52,9 @@ public class ManagerController {
 
     // 가게 전체 조회
     @GetMapping("/store")
-    public ResponseEntity<ResultResponse<?>> getStoreList() {
+    public ResponseEntity<ResultResponse<?>> getStoreList(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                          @RequestBody StoreListReq req) {
+        Page<StoreListRes> result = managerService.getStoreList(req);
         return null;
     }
 

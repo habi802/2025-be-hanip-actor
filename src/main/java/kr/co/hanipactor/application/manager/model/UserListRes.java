@@ -12,9 +12,7 @@ public class UserListRes {
     private long userId;
     private String name;
     private String loginId;
-    private String postcode;
     private String address;
-    private String addressDetail;
     private String phone;
     private String email;
     private String providerType;
