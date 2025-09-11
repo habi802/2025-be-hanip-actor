@@ -138,7 +138,6 @@ public class MenuService {
 
         return MenuGetRes.builder()
                          .menuId(menuId)
-                         .storeId(menu.getStore().getId())
                          .name(menu.getName())
                          .price(menu.getPrice())
                          .comment(menu.getComment())
@@ -332,6 +331,7 @@ public class MenuService {
             // 하위 옵션까지 담긴 메뉴를 데이터에 담은 뒤 그 데이터를 리스트에 add
             OrderMenuGetRes orderMenu = OrderMenuGetRes.builder()
                                                        .menuId(menu.getId())
+                                                       .storeId(menu.getStore().getId())
                                                        .name(menu.getName())
                                                        .price(menu.getPrice())
                                                        .imagePath(menu.getImagePath())
