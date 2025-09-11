@@ -21,5 +21,6 @@ public class StoreGetListRes {
     private int minAmount; // 최소 주문 금액
     private double rating; // 별점 평균
     private int favorites; // 좋아요 갯수
+    private boolean isFavorite; // 좋아요 유무
     private List<EnumStoreCategory> category; // 카테고리
 }
