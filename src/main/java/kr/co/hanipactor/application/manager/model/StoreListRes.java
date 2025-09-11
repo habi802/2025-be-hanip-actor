@@ -9,4 +9,13 @@ import lombok.ToString;
 @ToString
 public class StoreListRes {
     private long storeId;
+    private String openDate;
+    private String name;
+    private String ownerName;
+    private String businessNumber;
+    private String category;
+    private String address;
+    private String tel;
+    private int isActive;
+    private String createdAt;
 }

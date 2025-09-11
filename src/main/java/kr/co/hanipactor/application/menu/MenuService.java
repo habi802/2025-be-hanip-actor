@@ -138,6 +138,7 @@ public class MenuService {
 
         return MenuGetRes.builder()
                          .menuId(menuId)
+                         .storeId(menu.getStore().getId())
                          .name(menu.getName())
                          .price(menu.getPrice())
                          .comment(menu.getComment())

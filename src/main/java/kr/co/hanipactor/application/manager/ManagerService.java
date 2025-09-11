@@ -119,7 +119,9 @@ public class ManagerService {
     public Page<StoreListRes> getStoreList(StoreListReq req) {
         // 검색 조건 적용
         Specification<Store> spec = StoreSpecification.hasStartDate(req.getStartDate())
-                                                      .and(StoreSpecification.hasEndDate(req.getEndDate()));
+                                                      .and(StoreSpecification.hasEndDate(req.getEndDate()))
+                                                      .and(StoreSpecification.hasStartOpenDate(req.getEndOpenDate()))
+                                                      .and(StoreSpecification.hasEndOpenDate(req.getEndOpenDate()));
 
         // 페이징 및 페이지 사이즈 적용
         Pageable pageable = PageRequest.of(req.getPageNumber(), req.getPageSize());
