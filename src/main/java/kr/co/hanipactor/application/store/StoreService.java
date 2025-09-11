@@ -15,6 +15,8 @@ import kr.co.hanipactor.openfegin.review.model.ReviewGetRatingRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +68,11 @@ public class StoreService {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new RuntimeException("해당 가게가 없습니다."));
         return StoreGetRes.of(store);
+    }
+
+    // 가게 정보 수정
+    public void updateStore(Long signedUserId, MultipartFile pic) {
+
     }
 
     // 가게 평점 및 좋아요 갯수 수정 (서버 api)

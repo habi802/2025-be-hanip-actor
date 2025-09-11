@@ -20,6 +20,7 @@ public class StoreGetRes {
     private int isPickUp;
     private int maxDeliveryFee;
     private int minDeliveryFee;
+    private int minAmount;
     private String businessNumber;
     private String ownerName;
     private String tel;
@@ -45,6 +46,7 @@ public class StoreGetRes {
                 .isPickUp(store.getIsPickUp())
                 .maxDeliveryFee(store.getMaxDeliveryFee())
                 .minDeliveryFee(store.getMinDeliveryFee())
+                .minAmount(store.getMinAmount())
                 .businessNumber(store.getBusinessNumber())
                 .ownerName(store.getOwnerName())
                 .tel(store.getTel())
