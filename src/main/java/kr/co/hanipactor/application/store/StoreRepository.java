@@ -2,9 +2,7 @@ package kr.co.hanipactor.application.store;
 
 import kr.co.hanipactor.entity.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import java.util.Optional;
-
-public interface StoreRepository extends JpaRepository<Store, Long> {
-    Optional<Store> findByUserId(Long userId);
+public interface StoreRepository extends JpaRepository<Store, Long>, JpaSpecificationExecutor<Store> {
 }

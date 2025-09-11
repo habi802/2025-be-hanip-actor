@@ -1,16 +1,22 @@
 package kr.co.hanipactor.application.manager;
 
-import kr.co.hanipactor.application.manager.model.UserAllGetReq;
-import kr.co.hanipactor.application.manager.model.UserAllGetRes;
+import jakarta.servlet.http.HttpServletResponse;
+import kr.co.hanipactor.application.manager.model.*;
+import kr.co.hanipactor.application.user.model.UserLoginDto;
+import kr.co.hanipactor.application.user.model.UserLoginReq;
+import kr.co.hanipactor.application.user.model.UserLoginRes;
+import kr.co.hanipactor.configuration.jwt.JwtTokenManager;
 import kr.co.hanipactor.configuration.model.ResultResponse;
+import kr.co.hanipactor.configuration.model.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -19,11 +25,51 @@ import org.springframework.web.bind.annotation.RestController;
 public class ManagerController {
     private final ManagerService managerService;
 
+    private final JwtTokenManager jwtTokenManager;
+
+    // 관리자 유저 로그인
+    @PostMapping("/login")
+    public ResponseEntity<ResultResponse<UserLoginRes>> login(@RequestBody UserLoginReq req, HttpServletResponse response) {
+        UserLoginDto userLoginDto = managerService.login(req);
+        jwtTokenManager.issue(response, userLoginDto.getJwtUser());
+
+        if (userLoginDto == null) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ResultResponse.fail(401, "아이디나 비밀번호가 올바르지 않습니다."));
+        }
+
+        return ResponseEntity.ok(ResultResponse.success(userLoginDto.getUserLoginRes()));
+    }
+
     // 유저 전체 조회
-    @GetMapping
-    public ResponseEntity<ResultResponse<?>> allUser(@RequestBody UserAllGetReq req) {
-        log.info("allUser req: {}", req);
-        Page<UserAllGetRes> result = managerService.allUser(req);
+    @GetMapping("/user")
+    public ResponseEntity<ResultResponse<?>> getUserList(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                         @RequestBody UserListReq req) {
+        Page<UserListRes> result = managerService.getUserList(req);
         return ResponseEntity.ok(ResultResponse.success(result));
+    }
+
+    // 가게 전체 조회
+    @GetMapping("/store")
+    public ResponseEntity<ResultResponse<?>> getStoreList(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                          @RequestBody StoreListReq req) {
+        Page<StoreListRes> result = managerService.getStoreList(req);
+        return null;
+    }
+
+    // 가게 상세 조회
+    @GetMapping("/store/{storeId}")
+    public ResponseEntity<ResultResponse<?>> getStore(@PathVariable Long storeId) {
+        StoreInManagerRes result = managerService.getStore(storeId);
+        return ResponseEntity.ok(ResultResponse.success(result));
+    }
+
+    // 가게 영업 승인 상태 변경
+    @PatchMapping("/store")
+    public ResponseEntity<ResultResponse<?>> patchIsActiveInStore(@RequestParam(name = "id") List<Long> ids,
+                                                                  @RequestParam int isActive) {
+        managerService.patchIsActiveInStore(ids, isActive);
+        return ResponseEntity.ok(ResultResponse.success(1));
     }
 }

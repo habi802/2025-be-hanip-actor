@@ -1,39 +1,85 @@
 package kr.co.hanipactor.application.manager;
 
+import kr.co.hanipactor.application.manager.model.*;
+import kr.co.hanipactor.application.manager.specification.StoreSpecification;
 import kr.co.hanipactor.application.manager.specification.UserSpecification;
-import kr.co.hanipactor.application.manager.model.UserAllGetReq;
-import kr.co.hanipactor.application.manager.model.UserAllGetRes;
+import kr.co.hanipactor.application.store.StoreRepository;
+import kr.co.hanipactor.application.storecategory.StoreCategoryRepository;
 import kr.co.hanipactor.application.user.UserRepository;
+import kr.co.hanipactor.application.user.model.UserLoginDto;
+import kr.co.hanipactor.application.user.model.UserLoginReq;
+import kr.co.hanipactor.application.user.model.UserLoginRes;
+import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
+import kr.co.hanipactor.configuration.model.JwtUser;
+import kr.co.hanipactor.entity.Store;
+import kr.co.hanipactor.entity.StoreCategory;
 import kr.co.hanipactor.entity.User;
 import kr.co.hanipactor.entity.UserAddress;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ManagerService {
     private final UserRepository userRepository;
+    private final StoreRepository storeRepository;
+    private final StoreCategoryRepository storeCategoryRepository;
+
+    // 관리자 로그인
+    public UserLoginDto login(UserLoginReq req) {
+        User user = userRepository.findByLoginId(req.getLoginId());
+
+        // 비밀번호 일치 확인
+        if (user == null || !BCrypt.checkpw(req.getLoginPw(), user.getLoginPw())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "일치하는 계정이 없습니다.");
+        }
+
+        // 관리자 권한 확인
+        EnumUserRole role = user.getRole();
+        if (role == null || !"MANAGER".equals(role.name())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "일치하는 계정이 없습니다.");
+        }
+
+        JwtUser jwtUser = new JwtUser(user.getId(), user.getRole());
+
+        UserLoginRes userLoginRes = UserLoginRes.builder()
+                .id(user.getId())
+                .role(role)
+                .loginPw(user.getLoginPw())
+                .build();
+
+        return UserLoginDto.builder()
+                .jwtUser(jwtUser)
+                .userLoginRes(userLoginRes)
+                .build();
+    }
 
     // 유저 전체 조회
-    public Page<UserAllGetRes> allUser(UserAllGetReq req) {
+    public Page<UserListRes> getUserList(UserListReq req) {
         // 검색 조건 적용
         Specification<User> spec = UserSpecification.hasStartDate(req.getStartDate())
-                .and(UserSpecification.hasEndDate(req.getEndDate()))
-                .and(UserSpecification.hasLoginId(req.getLoginId()))
-                .and(UserSpecification.hasName(req.getName()))
-                .and(UserSpecification.hasAddress(req.getAddress()))
-                .and(UserSpecification.hasPhone(req.getPhone()))
-                .and(UserSpecification.hasEmail(req.getEmail()))
-                .and(UserSpecification.hasProviderType(req.getProviderType()))
-                .and(UserSpecification.hasRole(req.getRole()));
+                                                    .and(UserSpecification.hasEndDate(req.getEndDate()))
+                                                    .and(UserSpecification.hasLoginId(req.getLoginId()))
+                                                    .and(UserSpecification.hasName(req.getName()))
+                                                    .and(UserSpecification.hasAddress(req.getAddress()))
+                                                    .and(UserSpecification.hasPhone(req.getPhone()))
+                                                    .and(UserSpecification.hasEmail(req.getEmail()))
+                                                    .and(UserSpecification.hasProviderType(req.getProviderType()))
+                                                    .and(UserSpecification.hasRole(req.getRole()));
 
         // 페이징 및 페이지 사이즈 적용
         Pageable pageable = PageRequest.of(req.getPageNumber(), req.getPageSize());
@@ -43,31 +89,94 @@ public class ManagerService {
         // Page 타입은 Spring Data JPA에서 제공하는 인터페이스라고 함
         // List 타입과 비슷하나 페이징 관련 정보가 포함되어 있음
         Page<User> page = userRepository.findAll(spec, pageable);
-        Page<UserAllGetRes> result = page.map(u -> {
-                    // 이미 검색 조건을 리턴하는 데서 기본 주소인 것을 조건으로 조인을 했으나,
-                    // @OneToMany(fetch = FetchType.LAZY) 면, getAddresses()를 호출할 때 DB에서 다시 조회된다고 함
-                    // 그래서 기본 주소인 데이터 중 가장 첫 번째를 mainAddress 라는 변수에 담음
-                    UserAddress mainAddress = u.getAddresses().stream()
-                            .filter(address -> address.getIsMain() == 1)
-                            .findFirst()
-                            .orElse(null);
+        Page<UserListRes> result = page.map(user -> {
+                // 이미 검색 조건을 리턴하는 데서 기본 주소인 것을 조건으로 조인을 했으나,
+                // @OneToMany(fetch = FetchType.LAZY) 면, getAddresses()를 호출할 때 DB에서 다시 조회된다고 함
+                // 그래서 기본 주소인 데이터 중 가장 첫 번째를 mainAddress 라는 변수에 담음
+                UserAddress mainAddress = user.getAddresses().stream()
+                                                             .filter(address -> address.getIsMain() == 1)
+                                                             .findFirst()
+                                                             .orElse(null);
 
-                    return UserAllGetRes.builder()
-                            .userId(u.getId())
-                            .name(u.getName())
-                            .loginId(u.getLoginId())
-                            .postcode(mainAddress != null ? mainAddress.getPostcode() : null)
-                            .address(mainAddress != null ? mainAddress.getAddress() : null)
-                            .addressDetail(mainAddress != null ? mainAddress.getAddressDetail() : null)
-                            .phone(u.getPhone())
-                            .email(u.getEmail())
-                            .providerType(u.getProviderType().getCode())
-                            .role(u.getRole().getCode())
-                            .createdAt(u.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                            .build();
-                }
+                return UserListRes.builder()
+                                  .userId(user.getId())
+                                  .name(user.getName())
+                                  .loginId(user.getLoginId())
+                                  .address(mainAddress != null ? String.format("%s, %s, %s", mainAddress.getPostcode(), mainAddress.getAddress(), mainAddress.getAddressDetail()) : null)
+                                  .phone(user.getPhone())
+                                  .email(user.getEmail())
+                                  .providerType(user.getProviderType().getCode())
+                                  .role(user.getRole().getCode())
+                                  .createdAt(user.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                                  .build();
+            }
         );
 
         return result;
+    }
+
+    // 가게 전체 조회
+    public Page<StoreListRes> getStoreList(StoreListReq req) {
+        // 검색 조건 적용
+        Specification<Store> spec = StoreSpecification.hasStartDate(req.getStartDate())
+                                                      .and(StoreSpecification.hasEndDate(req.getEndDate()));
+
+        // 페이징 및 페이지 사이즈 적용
+        Pageable pageable = PageRequest.of(req.getPageNumber(), req.getPageSize());
+
+        Page<Store> page = storeRepository.findAll(spec, pageable);
+        Page<StoreListRes> result = page.map(store -> StoreListRes.builder()
+                                                                  .storeId(store.getId())
+                                                                  .build()
+        );
+
+        return result;
+    }
+
+    // 가게 상세 조회
+    public StoreInManagerRes getStore(Long storeId) {
+        Store store = storeRepository.findById(storeId).orElse(null);
+
+        List<StoreCategory> storeCategories = storeCategoryRepository.findByStoreId(storeId);
+        List<String> categories = new ArrayList<>();
+        for(StoreCategory storeCategory : storeCategories) {
+            categories.add(storeCategory.getStoreCategoryId().getCategory().getValue());
+        }
+
+        // 와우..
+        return StoreInManagerRes.builder()
+                                .name(store.getName())
+                                .imagePath(store.getImagePath())
+                                .categories(categories)
+                                .businessNumber(store.getBusinessNumber())
+                                .licensePath(store.getLicensePath())
+                                .ownerName(store.getOwnerName())
+                                .openDate(store.getOpenDate())
+                                .address(String.format("%s, %s, %s", store.getPostcode(), store.getAddress(), store.getAddressDetail()))
+                                .isActive(store.getIsActive())
+                                .comment(store.getComment())
+                                .eventComment(store.getEventComment())
+                                .tel(store.getTel())
+                                .openTime(store.getOpenTime())
+                                .closeTime(store.getCloseTime())
+                                .closedDay(store.getClosedDay() != null ? store.getClosedDay().getValue() : "-")
+                                .isOpen(store.getIsOpen())
+                                .isPickUp(store.getIsPickUp())
+                                .minDeliveryFee(store.getMinDeliveryFee())
+                                .maxDeliveryFee(store.getMaxDeliveryFee())
+                                .minAmount(store.getMinAmount())
+                                .rating(store.getRating())
+                                .favorites(store.getFavorites())
+                                .build();
+    }
+
+    // 가게 영업 승인 상태 변경
+    @Transactional
+    public void patchIsActiveInStore(List<Long> ids, int isActive) {
+        List<Store> stores = storeRepository.findAllById(ids);
+
+        for (Store store : stores) {
+            store.setIsActive(isActive);
+        }
     }
 }
