@@ -76,7 +76,7 @@ public class UserService {
                 case OWNER -> {
                     String savedFileName = null;
                     if(pic != null) {
-                        savedFileName = imgUploadManager.saveProfilePic(user.getId(), pic);
+                        savedFileName = imgUploadManager.saveStorePic(user.getId(), pic);
                     }
                     Store store = Store.builder()
                             .user(savedUser)

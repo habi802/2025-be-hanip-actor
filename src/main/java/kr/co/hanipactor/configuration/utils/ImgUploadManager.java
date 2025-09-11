@@ -40,13 +40,13 @@ public class ImgUploadManager {
         return randomFileNames;
     }
 
-    private String makeProfileDirectoryPath(long userId) {
-        return String.format("%s/%s/%d",  constFile.getUploadDirectory(), constFile.getProfilePic(), userId);
+    private String makeStoreDirectoryPath(long userId) {
+        return String.format("%s/%s/%d",  constFile.getUploadDirectory(), constFile.getStorePic(), userId);
     }
 
     //프로파일 유저 폴더 삭제
     public void removeProfileDirectory(long userId) {
-        String directory = makeProfileDirectoryPath(userId);
+        String directory = makeStoreDirectoryPath(userId);
         myFileUtils.deleteFolder(directory, true);
     }
 
@@ -61,9 +61,9 @@ public class ImgUploadManager {
     }
 
     //저장한 파일명 리턴
-    public String saveProfilePic(long userId, MultipartFile profilePicFile) {
+    public String saveStorePic(long userId, MultipartFile profilePicFile) {
         //폴더 생성
-        String directory = makeProfileDirectoryPath(userId);
+        String directory = makeStoreDirectoryPath(userId);
         myFileUtils.makeFolders(directory);
 
         String randomFileName = myFileUtils.makeRandomFileName(profilePicFile);
@@ -72,7 +72,7 @@ public class ImgUploadManager {
         try {
             myFileUtils.transferTo(profilePicFile, savePath);
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "프로파일 이미지 저장에 실패하였습니다.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "가게 이미지 저장에 실패하였습니다.");
         }
         return randomFileName;
     }
