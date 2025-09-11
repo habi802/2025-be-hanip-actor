@@ -120,16 +120,40 @@ public class ManagerService {
         // 검색 조건 적용
         Specification<Store> spec = StoreSpecification.hasStartDate(req.getStartDate())
                                                       .and(StoreSpecification.hasEndDate(req.getEndDate()))
-                                                      .and(StoreSpecification.hasStartOpenDate(req.getEndOpenDate()))
-                                                      .and(StoreSpecification.hasEndOpenDate(req.getEndOpenDate()));
+                                                      .and(StoreSpecification.hasStartOpenDate(req.getStartOpenDate()))
+                                                      .and(StoreSpecification.hasEndOpenDate(req.getEndOpenDate()))
+                                                      .and(StoreSpecification.hasName(req.getName()))
+                                                      .and(StoreSpecification.hasOwnerName(req.getOwnerName()))
+                                                      .and(StoreSpecification.hasBusinessNumber(req.getBusinessNumber()))
+                                                      .and(StoreSpecification.hasCategory(req.getCategory()))
+                                                      .and(StoreSpecification.hasAddress(req.getAddress()))
+                                                      .and(StoreSpecification.hasTel(req.getTel()))
+                                                      .and(StoreSpecification.hasIsActive(req.getIsActive()));
 
         // 페이징 및 페이지 사이즈 적용
         Pageable pageable = PageRequest.of(req.getPageNumber(), req.getPageSize());
 
         Page<Store> page = storeRepository.findAll(spec, pageable);
-        Page<StoreListRes> result = page.map(store -> StoreListRes.builder()
-                                                                  .storeId(store.getId())
-                                                                  .build()
+        Page<StoreListRes> result = page.map(store -> {
+                List<StoreCategory> storeCategories = storeCategoryRepository.findByStoreId(store.getId());
+                List<String> categories = new ArrayList<>();
+                for(StoreCategory storeCategory : storeCategories) {
+                    categories.add(storeCategory.getStoreCategoryId().getCategory().getValue());
+                }
+
+                return StoreListRes.builder()
+                                   .storeId(store.getId())
+                                   .openDate(store.getOpenDate())
+                                   .name(store.getName())
+                                   .ownerName(store.getOwnerName())
+                                   .businessNumber(store.getBusinessNumber())
+                                   .categories(categories)
+                                   .address(String.format("%s, %s, %s", store.getPostcode(), store.getAddress(), store.getAddressDetail()))
+                                   .tel(store.getTel())
+                                   .isActive(store.getIsActive())
+                                   .createdAt(store.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                                   .build();
+            }
         );
 
         return result;

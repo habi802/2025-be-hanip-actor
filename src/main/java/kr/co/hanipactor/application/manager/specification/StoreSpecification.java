@@ -2,6 +2,7 @@ package kr.co.hanipactor.application.manager.specification;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import kr.co.hanipactor.configuration.enumcode.model.EnumStoreCategory;
 import kr.co.hanipactor.entity.Store;
 import kr.co.hanipactor.entity.StoreCategory;
 import org.springframework.data.jpa.domain.Specification;
@@ -98,9 +99,10 @@ public class StoreSpecification {
                 return null;
             }
 
-            Join<Store, StoreCategory> join = root.join("addresses", JoinType.INNER);
+            Join<Store, StoreCategory> join = root.join("categories", JoinType.INNER);
 
-            return cb.equal(root.get("category"), category);
+            EnumStoreCategory enumStoreCategory = EnumStoreCategory.valueOfCode(category);
+            return cb.equal(join.get("storeCategoryId").get("category"), enumStoreCategory);
         };
     }
 

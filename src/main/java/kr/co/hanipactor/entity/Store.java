@@ -5,6 +5,9 @@ import kr.co.hanipactor.configuration.enumcode.model.EnumDayOfWeek;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -113,6 +116,9 @@ public class Store extends UpdatedAt {
     @Column(nullable = false, columnDefinition = "INT DEFAULT '0'")
     @Comment("총 찜 수")
     private Integer favorites;
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<StoreCategory> categories = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

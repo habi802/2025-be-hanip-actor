@@ -44,18 +44,16 @@ public class ManagerController {
 
     // 유저 전체 조회
     @GetMapping("/user")
-    public ResponseEntity<ResultResponse<?>> getUserList(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                         @RequestBody UserListReq req) {
+    public ResponseEntity<ResultResponse<?>> getUserList(@RequestBody UserListReq req) {
         Page<UserListRes> result = managerService.getUserList(req);
         return ResponseEntity.ok(ResultResponse.success(result));
     }
 
     // 가게 전체 조회
     @GetMapping("/store")
-    public ResponseEntity<ResultResponse<?>> getStoreList(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                          @RequestBody StoreListReq req) {
+    public ResponseEntity<ResultResponse<?>> getStoreList(@RequestBody StoreListReq req) {
         Page<StoreListRes> result = managerService.getStoreList(req);
-        return null;
+        return ResponseEntity.ok(ResultResponse.success(result));
     }
 
     // 가게 상세 조회

@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Builder
 @ToString
@@ -13,7 +15,7 @@ public class StoreListRes {
     private String name;
     private String ownerName;
     private String businessNumber;
-    private String category;
+    private List<String> categories;
     private String address;
     private String tel;
     private int isActive;
