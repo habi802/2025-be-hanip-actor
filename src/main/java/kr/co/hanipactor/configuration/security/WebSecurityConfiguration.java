@@ -39,6 +39,9 @@ public class WebSecurityConfiguration {
                         // 인증 없이 허용할 API들
                         .requestMatchers("/api/user/login", "/api/user/join", "api/hanip-manager/actor/login", "/api/store").permitAll()
 
+                        // 사장님만 접근 가능한 API들
+                        .requestMatchers("/api/store/owner").hasRole(EnumUserRole.OWNER.name())
+
                         // 인증이 필요한 API들
                         .requestMatchers(HttpMethod.POST, "/api/feed").hasAnyRole(EnumUserRole.CUSTOMER.name())
 
