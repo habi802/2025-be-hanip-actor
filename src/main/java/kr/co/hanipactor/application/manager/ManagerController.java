@@ -1,8 +1,9 @@
 package kr.co.hanipactor.application.manager;
 
 import jakarta.servlet.http.HttpServletResponse;
-import kr.co.hanipactor.application.manager.model.UserAllGetReq;
-import kr.co.hanipactor.application.manager.model.UserAllGetRes;
+import kr.co.hanipactor.application.manager.model.StoreInManagerRes;
+import kr.co.hanipactor.application.manager.model.UserListReq;
+import kr.co.hanipactor.application.manager.model.UserListRes;
 import kr.co.hanipactor.application.user.model.UserLoginDto;
 import kr.co.hanipactor.application.user.model.UserLoginReq;
 import kr.co.hanipactor.application.user.model.UserLoginRes;
@@ -46,8 +47,8 @@ public class ManagerController {
     // 유저 전체 조회
     @GetMapping("/user")
     public ResponseEntity<ResultResponse<?>> getUserList(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                         @RequestBody UserAllGetReq req) {
-        Page<UserAllGetRes> result = managerService.getUserList(req);
+                                                         @RequestBody UserListReq req) {
+        Page<UserListRes> result = managerService.getUserList(req);
         return ResponseEntity.ok(ResultResponse.success(result));
     }
 
@@ -60,7 +61,8 @@ public class ManagerController {
     // 가게 상세 조회
     @GetMapping("/store/{storeId}")
     public ResponseEntity<ResultResponse<?>> getStore(@PathVariable Long storeId) {
-        return null;
+        StoreInManagerRes result = managerService.getStore(storeId);
+        return ResponseEntity.ok(ResultResponse.success(result));
     }
 
     // 가게 영업 승인 상태 변경

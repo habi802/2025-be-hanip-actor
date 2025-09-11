@@ -6,7 +6,7 @@ import lombok.ToString;
 // 유저 전체 조회 검색용 객체
 @Getter
 @ToString
-public class UserAllGetReq {
+public class UserListReq {
     private String startDate;
     private String endDate;
     private String loginId;

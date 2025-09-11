@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-public class UserAllGetRes {
+public class UserListRes {
     private long userId;
     private String name;
     private String loginId;
