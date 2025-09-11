@@ -7,13 +7,11 @@ import kr.co.hanipactor.application.user.model.UserLoginReq;
 import kr.co.hanipactor.application.user.model.UserLoginRes;
 import kr.co.hanipactor.configuration.jwt.JwtTokenManager;
 import kr.co.hanipactor.configuration.model.ResultResponse;
-import kr.co.hanipactor.configuration.model.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,18 +42,16 @@ public class ManagerController {
 
     // 유저 전체 조회
     @GetMapping("/user")
-    public ResponseEntity<ResultResponse<?>> getUserList(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                         @RequestBody UserListReq req) {
+    public ResponseEntity<ResultResponse<?>> getUserList(@RequestBody UserListReq req) {
         Page<UserListRes> result = managerService.getUserList(req);
         return ResponseEntity.ok(ResultResponse.success(result));
     }
 
     // 가게 전체 조회
     @GetMapping("/store")
-    public ResponseEntity<ResultResponse<?>> getStoreList(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                          @RequestBody StoreListReq req) {
+    public ResponseEntity<ResultResponse<?>> getStoreList(@RequestBody StoreListReq req) {
         Page<StoreListRes> result = managerService.getStoreList(req);
-        return null;
+        return ResponseEntity.ok(ResultResponse.success(result));
     }
 
     // 가게 상세 조회
@@ -70,6 +66,6 @@ public class ManagerController {
     public ResponseEntity<ResultResponse<?>> patchIsActiveInStore(@RequestParam(name = "id") List<Long> ids,
                                                                   @RequestParam int isActive) {
         managerService.patchIsActiveInStore(ids, isActive);
-        return ResponseEntity.ok(ResultResponse.success(1));
+        return ResponseEntity.ok(ResultResponse.success("가게 수정 완료"));
     }
 }

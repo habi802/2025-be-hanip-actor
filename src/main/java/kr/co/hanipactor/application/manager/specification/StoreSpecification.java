@@ -2,6 +2,7 @@ package kr.co.hanipactor.application.manager.specification;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import kr.co.hanipactor.configuration.enumcode.model.EnumStoreCategory;
 import kr.co.hanipactor.entity.Store;
 import kr.co.hanipactor.entity.StoreCategory;
 import org.springframework.data.jpa.domain.Specification;
@@ -41,8 +42,7 @@ public class StoreSpecification {
                 return null;
             }
 
-            LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
-            return cb.greaterThanOrEqualTo(root.get("openDate"), startDateTime);
+            return cb.greaterThanOrEqualTo(root.get("openDate"), startDate);
         };
     }
 
@@ -53,8 +53,7 @@ public class StoreSpecification {
                 return null;
             }
 
-            LocalDateTime endDateTime = LocalDate.parse(endDate).atTime(23, 59, 59);
-            return cb.lessThanOrEqualTo(root.get("openDate"), endDateTime);
+            return cb.lessThanOrEqualTo(root.get("openDate"), endDate);
         };
     }
 
@@ -98,9 +97,10 @@ public class StoreSpecification {
                 return null;
             }
 
-            Join<Store, StoreCategory> join = root.join("addresses", JoinType.INNER);
+            Join<Store, StoreCategory> join = root.join("categories", JoinType.INNER);
 
-            return cb.equal(root.get("category"), category);
+            EnumStoreCategory enumStoreCategory = EnumStoreCategory.valueOfCode(category);
+            return cb.equal(join.get("storeCategoryId").get("category"), enumStoreCategory);
         };
     }
 
