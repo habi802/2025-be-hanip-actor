@@ -42,8 +42,7 @@ public class StoreSpecification {
                 return null;
             }
 
-            LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
-            return cb.greaterThanOrEqualTo(root.get("openDate"), startDateTime);
+            return cb.greaterThanOrEqualTo(root.get("openDate"), startDate);
         };
     }
 
@@ -54,8 +53,7 @@ public class StoreSpecification {
                 return null;
             }
 
-            LocalDateTime endDateTime = LocalDate.parse(endDate).atTime(23, 59, 59);
-            return cb.lessThanOrEqualTo(root.get("openDate"), endDateTime);
+            return cb.lessThanOrEqualTo(root.get("openDate"), endDate);
         };
     }
 
