@@ -115,6 +115,13 @@ public class ManagerService {
         return result;
     }
 
+    // 유저 상세 조회(Action 호출용)
+    public String getUser(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+
+        return user.getName();
+    }
+
     // 가게 전체 조회
     public Page<StoreListRes> getStoreList(StoreListReq req) {
         // 검색 조건 적용
