@@ -47,6 +47,13 @@ public class ManagerController {
         return ResponseEntity.ok(ResultResponse.success(result));
     }
 
+    // 유저 상세 조회(Action 호출용)
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ResultResponse<?>> getUser(@PathVariable Long userId) {
+        String result = managerService.getUser(userId);
+        return ResponseEntity.ok(ResultResponse.success(result));
+    }
+
     // 가게 전체 조회
     @GetMapping("/store")
     public ResponseEntity<ResultResponse<?>> getStoreList(@RequestBody StoreListReq req) {

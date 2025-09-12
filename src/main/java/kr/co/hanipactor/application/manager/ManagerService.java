@@ -82,7 +82,7 @@ public class ManagerService {
                                                     .and(UserSpecification.hasRole(req.getRole()));
 
         // 페이징 및 페이지 사이즈 적용
-        Pageable pageable = PageRequest.of(req.getPageNumber(), req.getPageSize());
+        Pageable pageable = req.getPageSize() == -1 ? Pageable.unpaged() : PageRequest.of(req.getPageNumber(), req.getPageSize());
 
         // 검색 조건에 맞는 유저 데이터를 가져온 뒤,
         // 필요한 컬럼을 멤버 필드로 가진 객체 타입의 Page 변수를 선언하여 리턴함
@@ -115,6 +115,13 @@ public class ManagerService {
         return result;
     }
 
+    // 유저 상세 조회(Action 호출용)
+    public String getUser(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+
+        return user.getName();
+    }
+
     // 가게 전체 조회
     public Page<StoreListRes> getStoreList(StoreListReq req) {
         // 검색 조건 적용
@@ -131,7 +138,7 @@ public class ManagerService {
                                                       .and(StoreSpecification.hasIsActive(req.getIsActive()));
 
         // 페이징 및 페이지 사이즈 적용
-        Pageable pageable = PageRequest.of(req.getPageNumber(), req.getPageSize());
+        Pageable pageable = req.getPageSize() == -1 ? Pageable.unpaged() : PageRequest.of(req.getPageNumber(), req.getPageSize());
 
         Page<Store> page = storeRepository.findAll(spec, pageable);
         Page<StoreListRes> result = page.map(store -> {
