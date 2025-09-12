@@ -2,7 +2,6 @@ package kr.co.hanipactor.configuration.jwt;
 
 
 import kr.co.hanipactor.configuration.constants.ConstJwt;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.co.hanipactor.configuration.model.JwtUser;
@@ -13,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
 
 //JWT 총괄 책임자
 @Slf4j
