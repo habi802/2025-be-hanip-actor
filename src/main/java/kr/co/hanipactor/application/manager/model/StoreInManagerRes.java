@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 @ToString
 public class StoreInManagerRes {
+    private long storeId;
     private String name;
     private String imagePath;
     private List<String> categories;
