@@ -5,24 +5,23 @@ import kr.co.hanipactor.application.store.model.*;
 import kr.co.hanipactor.application.storecategory.StoreCategoryMapper;
 import kr.co.hanipactor.application.storecategory.StoreCategoryRepository;
 import kr.co.hanipactor.configuration.enumcode.model.EnumStoreCategory;
-import kr.co.hanipactor.configuration.model.ResultResponse;
 import kr.co.hanipactor.configuration.utils.ImgUploadManager;
 import kr.co.hanipactor.entity.Store;
 import kr.co.hanipactor.entity.StoreCategory;
 import kr.co.hanipactor.entity.StoreCategoryIds;
 import kr.co.hanipactor.openfegin.favorites.FavoritesClient;
-import kr.co.hanipactor.openfegin.favorites.model.StoreFavoriteRes;
 import kr.co.hanipactor.openfegin.review.ReviewClient;
-import kr.co.hanipactor.openfegin.review.model.ReviewGetRatingRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Slf4j
 @Service
@@ -91,14 +90,22 @@ public class StoreService {
 
             // 가게 카테고리
             if (req.getStoreCategory() != null) {
-                List<StoreCategory> storeCategory = storeCategoryRepository.findByStoreId(req.getId());
-                for (StoreCategory category : storeCategory) {
-                    StoreCategoryIds storeCategoryIds = new StoreCategoryIds();
-                    storeCategoryIds.setCategory(req.getStoreCategory());
+                // 기존 카테고리 삭제
+                storeCategoryRepository.deleteByStoreId(req.getId());
 
-                    category.setStoreCategoryId(storeCategoryIds);
-                    category.setStore(store);
-                }
+                // 새로운 카테고리 저장
+                List<StoreCategory> storeCategory = req.getStoreCategory().stream()
+                        .map(cat -> {
+                            StoreCategoryIds ids = new StoreCategoryIds();
+                            ids.setCategory(cat);
+
+                            return StoreCategory.builder()
+                                    .storeCategoryId(ids)
+                                    .store(store)
+                                    .build();
+                        })
+                        .toList();
+
                 storeCategoryRepository.saveAll(storeCategory);
                 result++;
             }
@@ -113,64 +120,55 @@ public class StoreService {
         }
 
         // 가게 코멘트
-        if (req.getComment() != null) {
-            store.setComment(req.getComment());
-            result++;
-        }
+        result += applyIfNotNull(req.getComment(), store::setComment, store::getComment);
 
         // 영업 여부
-        if (req.getIsOpen() != null) {
-            store.setIsOpen(req.getIsOpen());
-            result++;
-        }
+        result += applyIfNotNull(req.getIsOpen(), store::setIsOpen, store::getIsOpen);
 
         // 영업 시간
-        if (req.getOpenTime() != null) {
-            store.setOpenTime(req.getOpenTime());
-            result++;
-        }
-        if (req.getCloseTime() != null) {
-            store.setCloseTime(req.getCloseTime());
-            result++;
-        }
+        result += applyIfNotNull(req.getOpenTime(), store::setOpenTime, store::getOpenTime);
+        result += applyIfNotNull(req.getCloseTime(), store::setCloseTime, store::getCloseTime);
 
         // 휴무일
-        if (req.getDayOfWeek() != null) {
-            store.setClosedDay(req.getDayOfWeek());
-            result++;
-        }
+        result += applyIfNotNull(req.getDayOfWeek(), store::setClosedDay, store::getClosedDay);
 
         // 최소 배달 요금
-        if (req.getMinDeliveryFee() != null) {
-            store.setMinDeliveryFee(req.getMinDeliveryFee());
-            result++;
-        }
+        result += applyIfNotNull(req.getMinDeliveryFee(), store::setMinDeliveryFee, store::getMinDeliveryFee);
 
         // 최대 배달 요금
-        if (req.getMaxDeliveryFee() != null) {
-            store.setMaxDeliveryFee(req.getMaxDeliveryFee());
-            result++;
-        }
+        result += applyIfNotNull(req.getMaxDeliveryFee(), store::setMaxDeliveryFee, store::getMaxDeliveryFee);
 
         // 최소 주문 금액
-        if (req.getMinAmount() != null) {
-            store.setMinAmount(req.getMinAmount());
-            result++;
-        }
+        result += applyIfNotNull(req.getMinAmount(), store::setMinAmount, store::getMinAmount);
 
         // 포장 주문 여부
-        if (req.getIsPickUp() != null) {
-            store.setIsPickUp(req.getIsPickUp());
-            result++;
-        }
+        result += applyIfNotNull(req.getIsPickUp(), store::setIsPickUp, store::getIsPickUp);
 
         // 이벤트 알림
-        if (req.getEventComment() != null) {
-            store.setEventComment(req.getEventComment());
-            result++;
-        }
+        result += applyIfNotNull(req.getEventComment(), store::setEventComment, store::getEventComment);
 
         return result;
+    }
+
+    // 가게 수정 헬퍼 메소드
+    public <T> int applyIfNotNull(T newValue, Consumer<T> setter, Supplier<T> getter) {
+        if (newValue != null && !Objects.equals(newValue, getter.get())) {
+            setter.accept(newValue);
+            return 1;
+        }
+        return 0;
+    }
+
+    // 가게 영업 활성화
+    @Transactional
+    public Integer updateIsOpenByStoreIdAndUserId(Long storeId) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new RuntimeException("해당 가게가 없습니다."));
+
+        log.info("store.getIsOpen(): {}", store.getIsOpen());
+        store.setIsOpen(store.getIsOpen() == 0 ? 1 : 0);
+        storeRepository.save(store);
+        return 1;
     }
 
     // 가게 평점 및 좋아요 갯수 수정 (서버 api)

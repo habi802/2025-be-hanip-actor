@@ -52,8 +52,8 @@ public class StoreController {
     }
 
     // 가게 수정 (사장)
-    @PutMapping
-    public ResponseEntity<ResultResponse<Integer>> putStore(@AuthenticationPrincipal UserPrincipal userPrincipal,
+    @PutMapping("/update")
+    public ResponseEntity<ResultResponse<Integer>> modifyStore(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                       @RequestPart StorePutReq req,
                                                       @RequestPart(required = false) MultipartFile pic) {
         Long signedUserId = userPrincipal.getSignedUserId();
@@ -61,8 +61,12 @@ public class StoreController {
         return ResponseEntity.ok(new ResultResponse<>(200, "가게 수정 성공", result));
     }
 
-    // 가게 간단 정보 수정 (사장)
-    @PutMapping
+    // 가게 영업 활성화
+    @PatchMapping("/{storeId}")
+    public ResponseEntity<ResultResponse<?>> modifyOpenStore(@PathVariable Long storeId) {
+        Integer result = storeService.updateIsOpenByStoreIdAndUserId(storeId);
+        return ResponseEntity.ok(new ResultResponse<>(200, "가게 영업 변경 완료", result));
+    }
 
     // 좋아요 수 및 별점 평균 가게 수정 (서버 전용 API)
     @PatchMapping

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface StoreCategoryRepository extends JpaRepository<StoreCategory, Long> {
     List<StoreCategory> findByStoreId(Long storeId);
+    int deleteByStoreId(Long storeId);
 }

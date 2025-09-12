@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Builder
 @ToString
@@ -13,7 +15,7 @@ public class StorePutReq {
     private Long id;
     private String comment;
     private String tel;
-    private EnumStoreCategory storeCategory;
+    private List<EnumStoreCategory> storeCategory;
 
     private Integer isOpen;
     private String openTime;
