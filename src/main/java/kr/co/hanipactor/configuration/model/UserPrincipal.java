@@ -7,14 +7,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Getter
-public class UserPrincipal implements UserDetails {
+public class UserPrincipal implements UserDetails, OAuth2User {
     private final Collection<? extends GrantedAuthority> authorities;
     private final JwtUser jwtUser;
 
@@ -35,4 +37,10 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() { return "oauth2"; }
+
+    @Override
+    public String getName() { return "oauth2"; }
+
+    @Override
+    public Map<String, Object> getAttributes() { return Map.of(); }
 }

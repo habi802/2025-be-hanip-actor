@@ -38,7 +38,7 @@ public class MenuService {
 
         String savedFileName = null;
         if(pic != null) {
-            savedFileName = imgUploadManager.saveProfilePic(req.getStoreId(), pic);
+            savedFileName = imgUploadManager.saveStorePic(req.getStoreId(), pic);
         }
 
         // 메뉴 저장

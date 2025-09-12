@@ -16,6 +16,7 @@ server:
 constants:
   file:
     upload-directory: D:/hanip/images
+    store-pic: /store
   open-feign:
     action: HANIP-ACTION
 

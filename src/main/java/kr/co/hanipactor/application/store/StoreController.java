@@ -2,10 +2,7 @@ package kr.co.hanipactor.application.store;
 
 
 import jakarta.servlet.annotation.MultipartConfig;
-import kr.co.hanipactor.application.store.model.StoreGetListReq;
-import kr.co.hanipactor.application.store.model.StoreGetListRes;
-import kr.co.hanipactor.application.store.model.StoreGetRes;
-import kr.co.hanipactor.application.store.model.StorePatchReq;
+import kr.co.hanipactor.application.store.model.*;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.ResultResponse;
 import kr.co.hanipactor.configuration.model.UserPrincipal;
@@ -55,13 +52,20 @@ public class StoreController {
     }
 
     // 가게 수정 (사장)
-    @PutMapping
-    public ResponseEntity<ResultResponse<?>> putStore(@AuthenticationPrincipal UserPrincipal userPrincipal,
+    @PutMapping("/update")
+    public ResponseEntity<ResultResponse<Integer>> modifyStore(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                      @RequestPart StorePutReq req,
                                                       @RequestPart(required = false) MultipartFile pic) {
         Long signedUserId = userPrincipal.getSignedUserId();
-        storeService.updateStore(signedUserId, pic);
+        Integer result = storeService.modifyStore(signedUserId, req, pic);
+        return ResponseEntity.ok(new ResultResponse<>(200, "가게 수정 성공", result));
+    }
 
-        return null;
+    // 가게 영업 활성화
+    @PatchMapping("/{storeId}")
+    public ResponseEntity<ResultResponse<?>> modifyOpenStore(@PathVariable Long storeId) {
+        Integer result = storeService.updateIsOpenByStoreIdAndUserId(storeId);
+        return ResponseEntity.ok(new ResultResponse<>(200, "가게 영업 변경 완료", result));
     }
 
     // 좋아요 수 및 별점 평균 가게 수정 (서버 전용 API)
