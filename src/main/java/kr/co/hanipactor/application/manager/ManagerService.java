@@ -171,6 +171,7 @@ public class ManagerService {
 
         // 와우..
         return StoreInManagerRes.builder()
+                                .storeId(storeId)
                                 .name(store.getName())
                                 .imagePath(store.getImagePath())
                                 .categories(categories)

@@ -164,6 +164,7 @@ public class UserService {
                                 .id(item.getId())
                                 .userNickName(item.getName())
                                 .userPic(item.getImagePath())
+                                .userTel(item.getPhone())
                                 .build()
                 )
         );

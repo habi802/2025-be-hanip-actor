@@ -9,4 +9,5 @@ public class UserGetItem {
     private Long id;
     private String userNickName;
     private String userPic;
+    private String userTel;
 }
