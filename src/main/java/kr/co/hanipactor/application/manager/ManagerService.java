@@ -69,7 +69,7 @@ public class ManagerService {
     }
 
     // 유저 전체 조회
-    public Page<UserListRes> getUserList(UserListReq req) {
+    public PageResponse<UserListRes> getUserList(UserListReq req) {
         // 검색 조건 적용
         Specification<User> spec = UserSpecification.hasStartDate(req.getStartDate())
                                                     .and(UserSpecification.hasEndDate(req.getEndDate()))
@@ -89,7 +89,7 @@ public class ManagerService {
         // Page 타입은 Spring Data JPA에서 제공하는 인터페이스라고 함
         // List 타입과 비슷하나 페이징 관련 정보가 포함되어 있음
         Page<User> page = userRepository.findAll(spec, pageable);
-        Page<UserListRes> result = page.map(user -> {
+        List<UserListRes> result = page.stream().map(user -> {
                 // 이미 검색 조건을 리턴하는 데서 기본 주소인 것을 조건으로 조인을 했으나,
                 // @OneToMany(fetch = FetchType.LAZY) 면, getAddresses()를 호출할 때 DB에서 다시 조회된다고 함
                 // 그래서 기본 주소인 데이터 중 가장 첫 번째를 mainAddress 라는 변수에 담음
@@ -110,9 +110,9 @@ public class ManagerService {
                                   .createdAt(user.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                                   .build();
             }
-        );
+        ).toList();
 
-        return result;
+        return new PageResponse<>(result);
     }
 
     // 유저 상세 조회(Action 호출용)
@@ -123,7 +123,7 @@ public class ManagerService {
     }
 
     // 가게 전체 조회
-    public Page<StoreListRes> getStoreList(StoreListReq req) {
+    public PageResponse<StoreListRes> getStoreList(StoreListReq req) {
         // 검색 조건 적용
         Specification<Store> spec = StoreSpecification.hasStartDate(req.getStartDate())
                                                       .and(StoreSpecification.hasEndDate(req.getEndDate()))
@@ -141,7 +141,7 @@ public class ManagerService {
         Pageable pageable = req.getPageSize() == -1 ? Pageable.unpaged() : PageRequest.of(req.getPageNumber(), req.getPageSize());
 
         Page<Store> page = storeRepository.findAll(spec, pageable);
-        Page<StoreListRes> result = page.map(store -> {
+        List<StoreListRes> result = page.stream().map(store -> {
                 List<StoreCategory> storeCategories = storeCategoryRepository.findByStoreId(store.getId());
                 List<String> categories = new ArrayList<>();
                 for(StoreCategory storeCategory : storeCategories) {
@@ -161,9 +161,9 @@ public class ManagerService {
                                    .createdAt(store.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                                    .build();
             }
-        );
+        ).toList();
 
-        return result;
+        return new PageResponse<>(result);
     }
 
     // 가게 상세 조회
