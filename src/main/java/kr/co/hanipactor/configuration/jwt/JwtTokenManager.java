@@ -1,6 +1,7 @@
 package kr.co.hanipactor.configuration.jwt;
 
 
+import jakarta.ws.rs.core.HttpHeaders;
 import kr.co.hanipactor.configuration.constants.ConstJwt;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 //JWT 총괄 책임자
 @Slf4j
@@ -91,12 +93,21 @@ public class JwtTokenManager {
         deleteRefreshTokenInCookie(response);
     }
 
+    // Action 에서 FeignClient로 Action 의 API를 호출했을 때, 헤더를 통해 전달받은 토큰을 확인
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7); // "Bearer " 제거
+        }
+        return null;
+    }
+
     public Authentication getAuthentication(HttpServletRequest request) {
-        String accessToken = getAccessTokenFromCookie(request);
-        if(accessToken == null){ return null; }
+        String accessToken = getAccessTokenFromCookie(request) != null ? getAccessTokenFromCookie(request) : resolveToken(request);
+        if (accessToken == null) { return null; }
         JwtUser jwtUser = getJwtUserFromToken(accessToken);
         if(jwtUser == null) { return null; }
         UserPrincipal userPrincipal = new UserPrincipal(jwtUser);
-        return new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userPrincipal, accessToken, userPrincipal.getAuthorities());
     }
 }
