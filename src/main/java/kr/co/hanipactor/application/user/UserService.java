@@ -36,6 +36,7 @@ public class UserService {
     private final StoreMapper storeMapper;
     private final ImgUploadManager imgUploadManager;
 
+    // 유저 회원가입
     @Transactional
     public Integer join(UserJoinReq req, MultipartFile pic) {
         int result = 0;
@@ -129,6 +130,7 @@ public class UserService {
         return result;
     }
 
+    // 유저 로그인
     public UserLoginDto login(UserLoginReq req) {
         User user = userRepository.findByLoginId(req.getLoginId());
 
@@ -155,6 +157,18 @@ public class UserService {
                 .build();
     }
 
+    // 유저 비밀번호 체크
+    public Integer checkPassword(Long signedUserId, String password) {
+        User user = userRepository.findById(signedUserId).orElseThrow(
+                () -> new RuntimeException("해당 유저가 존재하지 않습니다."));
+
+        if (!BCrypt.checkpw(password, user.getLoginPw())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "아이디/비밀번호를 확인해 주세요.");
+        }
+        return 1;
+    }
+
+    // 유저 리스트 조회
     public Map<Long, UserGetItem> getUserList(List<Long> userIdList) {
         List<User> userList = userRepository.findAllById(userIdList);
 
@@ -168,5 +182,46 @@ public class UserService {
                                 .build()
                 )
         );
+    }
+
+    // 유저 정보 수정
+    @Transactional
+    public Integer updateUser(Long signedUserId, UserPutReq req, MultipartFile pic) {
+        User user = userRepository.findById(signedUserId).orElseThrow(
+                () -> new RuntimeException("정보를 수정할 권한이 없습니다."));
+
+        // 1) 비밀번호 재확인
+        if (req.getLoginPw() == null || req.getLoginPw().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "현재 비밀번호가 필요합니다.");
+        }
+        if (!BCrypt.checkpw(req.getLoginPw(), user.getLoginPw())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "아이디/비밀번호를 확인해 주세요.");
+        }
+
+        // 2) 필드 부분 업데이트
+        if (req.getName() != null && !req.getName().isBlank()) {
+            user.setName(req.getName());
+        }
+        if (req.getPhone() != null && !req.getPhone().isBlank()) {
+            user.setPhone(req.getPhone());
+        }
+        if (req.getEmail() != null && !req.getEmail().isBlank()) {
+            user.setEmail(req.getEmail());
+        }
+
+        // 3) 비밀번호 변경 (새 비번이 있을 때만)
+        if (req.getNewLoginPw() != null && !req.getNewLoginPw().isBlank()) {
+            String hashedPw = BCrypt.hashpw(req.getNewLoginPw(), BCrypt.gensalt());
+            user.setLoginPw(hashedPw);
+        }
+
+        // 4) 프로필 이미지 (비번 검증 후에 저장)
+        if (pic != null && !pic.isEmpty()) {
+            String savedFileName = imgUploadManager.saveUserProfilePic(user.getId(), pic);
+            user.setImagePath(savedFileName);
+        }
+
+        userRepository.save(user);
+        return 1;
     }
 }
