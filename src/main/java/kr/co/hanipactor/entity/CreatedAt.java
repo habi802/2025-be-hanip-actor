@@ -18,4 +18,8 @@ public class CreatedAt {
     @Column(nullable = false)
     @Comment("생성 일시")
     private LocalDateTime createdAt;
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }

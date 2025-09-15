@@ -1,6 +1,6 @@
 package kr.co.hanipactor.application.useraddress;
 
-import kr.co.hanipactor.application.useraddress.model.UserAddressPostReq;
+import kr.co.hanipactor.application.user.model.UserAddressPostReq;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

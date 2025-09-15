@@ -6,7 +6,6 @@ import kr.co.hanipactor.application.store.StoreRepository;
 import kr.co.hanipactor.application.storecategory.StoreCategoryRepository;
 import kr.co.hanipactor.application.user.model.*;
 import kr.co.hanipactor.application.useraddress.UserAddressRepository;
-import kr.co.hanipactor.application.useraddress.model.UserAddressPostReq;
 import kr.co.hanipactor.configuration.utils.ImgUploadManager;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.JwtUser;
@@ -118,6 +117,7 @@ public class UserService {
                                 .postcode(addReq.getPostcode())
                                 .address(addReq.getAddress())
                                 .addressDetail(addReq.getAddressDetail())
+                                .isMain(1)
                                 .build();
 
                         userAddressRepository.save(userAddress);
@@ -157,6 +157,22 @@ public class UserService {
                 .build();
     }
 
+    // 유조 주소 등록
+    public Integer saveUserAdds(Long signedUserId, UserAddressPostReq req) {
+        User user = userRepository.findById(signedUserId).orElseThrow(
+                () -> new RuntimeException("해당 유저가 존재하지 않습니다."));
+
+        userAddressRepository.save(UserAddress.builder()
+                .user(user)
+                .title(req.getTitle())
+                .isMain(0)
+                .postcode(req.getPostcode())
+                .address(req.getAddress())
+                .addressDetail(req.getAddressDetail())
+                .build());
+        return 1;
+    }
+
     // 유저 비밀번호 체크
     public Integer checkPassword(Long signedUserId, String password) {
         User user = userRepository.findById(signedUserId).orElseThrow(
@@ -182,6 +198,32 @@ public class UserService {
                                 .build()
                 )
         );
+    }
+
+    // 유저 정보 조회
+    public UserGetRes getUser(Long signedUserId) {
+        User user = userRepository.findById(signedUserId)
+                .orElseThrow(() -> new RuntimeException("해당 유저가 존재하지 않습니다."));
+
+        return UserGetRes.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .loginId(user.getLoginId())
+                .phone(user.getPhone())
+                .email(user.getEmail())
+                .imagePath(user.getImagePath())
+                .role(user.getRole())
+                .created(user.getCreatedAt())
+                .build();
+    }
+
+    // 유저 주소 조회
+    public List<UserAddressGetRes> getUserAddress(Long signedUserId) {
+        List<UserAddress> userAddress = userAddressRepository.findAllByUserId(signedUserId);
+
+        return userAddress.stream()
+                .map(UserAddressGetRes::from)
+                .toList();
     }
 
     // 유저 정보 수정
@@ -222,6 +264,58 @@ public class UserService {
         }
 
         userRepository.save(user);
+        return 1;
+    }
+
+    // 유저 주소 수정
+    @Transactional
+    public Integer updateUserAdds(UserAddressPutReq req) {
+        UserAddress userAddress = userAddressRepository.findById(req.getId()).orElseThrow();
+
+        if (req.getTitle() != null && !req.getTitle().isBlank()) {
+            userAddress.setTitle(req.getTitle());
+        }
+        if (req.getPostcode() != null && !req.getPostcode().isBlank()) {
+            userAddress.setPostcode(req.getPostcode());
+        }
+        if (req.getAddress() != null && !req.getAddress().isBlank()) {
+            userAddress.setAddress(req.getAddress());
+        }
+        if (req.getAddressDetail() != null && !req.getAddressDetail().isBlank()) {
+            userAddress.setAddressDetail(req.getAddressDetail());
+        }
+        userAddressRepository.save(userAddress);
+        return 1;
+    }
+
+    // 유저 메인 주소 변경
+    public Integer patchUserAddress(Long signedUserId, Long addressId) {
+        List<UserAddress> addresses = userAddressRepository.findAllByUserId(signedUserId);
+
+        if (addresses.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "등록된 주소가 없습니다.");
+        }
+
+        boolean found = false;
+        for (UserAddress address : addresses) {
+            if (address.getId() == addressId) {
+                address.setIsMain(1);  // 이놈만 기본주소
+                found = true;
+            } else {
+                address.setIsMain(0);  // 나머지는 전부 기본 아님
+            }
+        }
+
+        if (!found) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "해당 유저의 주소가 아닙니다.");
+        }
+        return 1;
+    }
+
+    // 유저 주소 삭제
+    public Integer deleteUserAddress(Long addressId) {
+        UserAddress userAddress = userAddressRepository.findById(addressId).orElseThrow();
+        userAddressRepository.delete(userAddress);
         return 1;
     }
 }

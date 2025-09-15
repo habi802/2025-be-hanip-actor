@@ -20,4 +20,8 @@ public class UpdatedAt extends CreatedAt {
     @Column(nullable = false)
     @Comment("수정 일시")
     private LocalDateTime updatedAt;
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 }

@@ -1,6 +1,6 @@
 package kr.co.hanipactor.application.useraddress;
 
-import kr.co.hanipactor.application.useraddress.model.UserAddressPostReq;
+import kr.co.hanipactor.application.user.model.UserAddressPostReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
