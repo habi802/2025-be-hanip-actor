@@ -83,4 +83,11 @@ public class ManagerController {
         List<UserStatsRes> result = managerService.getUserStats(req);
         return ResponseEntity.ok(ResultResponse.success(result));
     }
+
+    // 가게 등록 수 통계
+    @GetMapping("/store/stats")
+    public ResponseEntity<ResultResponse<?>> getStoreStats(@ModelAttribute StoreStatsReq req) {
+        List<StoreStatsRes> result = managerService.getStoreStats(req);
+        return ResponseEntity.ok(ResultResponse.success(result));
+    }
 }
