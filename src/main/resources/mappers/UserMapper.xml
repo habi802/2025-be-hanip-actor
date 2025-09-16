@@ -67,4 +67,69 @@
         SET login_pw = #{newLoginPw}
         WHERE id = #{userId}
     </update>
+
+    <!-- 가입자 수 통계 -->
+    <select id="findStatsByDate">
+        <choose>
+            <!-- 연간(2년 전, 1년 전, 올해) -->
+            <when test="type == 'YEAR'">
+                WITH years AS (
+                <foreach collection="periods" item="period" separator=" UNION ALL ">
+                    SELECT #{period} AS year
+                </foreach>
+                )
+                SELECT y.year AS period, COUNT(u.id) AS total
+                FROM years y
+                LEFT JOIN users u
+                ON YEAR(u.created_at) = y.year
+                GROUP BY y.year
+                ORDER BY y.year ASC
+            </when>
+
+            <!-- 월간(2달 전, 1달 전, 이번 달) -->
+            <when test="type == 'MONTH'">
+                WITH months AS (
+                <foreach collection="periods" item="period" separator=" UNION ALL ">
+                    SELECT #{period} AS month
+                </foreach>
+                )
+                SELECT DATE_FORMAT(m.month, '%Y-%m') AS period, COUNT(u.id) AS total
+                FROM months m
+                LEFT JOIN users u
+                ON DATE_FORMAT(u.created_at, '%Y-%m-01') = m.month
+                GROUP BY m.month
+                ORDER BY m.month ASC
+            </when>
+
+            <!-- 주간(2주 전, 1주 전, 이번 주) -->
+            <when test="type == 'WEEK'">
+                WITH weeks AS (
+                <foreach collection="periods" item="period" separator=" UNION ALL ">
+                    SELECT #{period} AS week_start
+                </foreach>
+                )
+                SELECT DATE_FORMAT(w.week_start, '%x-W%v') AS period, COUNT(u.id) AS total
+                FROM weeks w
+                LEFT JOIN users u
+                ON STR_TO_DATE(CONCAT(YEARWEEK(u.created_at, 3),' Monday'), '%X%V %W') = w.week_start
+                GROUP BY w.week_start
+                ORDER BY w.week_start ASC
+            </when>
+
+            <!-- 일간(2일 전, 1일 전, 오늘) -->
+            <otherwise>
+                WITH days AS (
+                <foreach collection="periods" item="period" separator=" UNION ALL ">
+                    SELECT #{period} AS day
+                </foreach>
+                )
+                SELECT d.day AS period, COUNT(u.id) AS total
+                FROM days d
+                LEFT JOIN users u
+                ON DATE(u.created_at) = d.day
+                GROUP BY d.day
+                ORDER BY d.day ASC
+            </otherwise>
+        </choose>
+    </select>
 </mapper>
