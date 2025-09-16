@@ -272,16 +272,16 @@ public class ManagerService {
     }
 
     // 가게 등록 수 통계
-    public List<UserStatsRes> getStoreStats(StoreStatsReq req) {
+    public List<StoreStatsRes> getStoreStats(StoreStatsReq req) {
         String type = req.getType().toUpperCase();
 
         List<String> periods = addPeriodList(type, req.getDate());
 
-        UserStatsDto dto = UserStatsDto.builder()
-                .type(type)
-                .periods(periods)
-                .build();
+        StoreStatsDto dto = StoreStatsDto.builder()
+                                         .type(type)
+                                         .periods(periods)
+                                         .build();
 
-        return userMapper.findStatsByDate(dto);
+        return storeMapper.findStatsByDate(dto);
     }
 }
