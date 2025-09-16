@@ -76,4 +76,21 @@ public class ImgUploadManager {
         }
         return randomFileName;
     }
+
+    //저장한 파일명 리턴
+    public String saveUserProfilePic(long userId, MultipartFile profilePicFile) {
+        //폴더 생성
+        String directory = makeStoreDirectoryPath(userId);
+        myFileUtils.makeFolders(directory);
+
+        String randomFileName = myFileUtils.makeRandomFileName(profilePicFile);
+        String savePath = directory + "/" + randomFileName;
+
+        try {
+            myFileUtils.transferTo(profilePicFile, savePath);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "프로필 이미지 저장에 실패하였습니다.");
+        }
+        return randomFileName;
+    }
 }

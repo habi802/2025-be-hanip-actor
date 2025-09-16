@@ -1,4 +1,4 @@
-package kr.co.hanipactor.application.useraddress.model;
+package kr.co.hanipactor.application.user.model;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +9,8 @@ import lombok.ToString;
 @ToString
 public class UserAddressPostReq {
     private String title;
-    private String postcode;
+    private Integer isMain;
     private String address;
+    private String postcode;
     private String addressDetail;
 }
