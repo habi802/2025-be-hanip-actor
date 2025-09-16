@@ -95,8 +95,8 @@
                 </foreach>
                 )
                 SELECT y.year AS period, COUNT(s.id) AS total
-                FROM stores s
-                LEFT JOIN users u
+                FROM years y
+                LEFT JOIN stores s
                 ON YEAR(s.created_at) = y.year
                 GROUP BY y.year
                 ORDER BY y.year ASC
