@@ -3,6 +3,7 @@ package kr.co.hanipactor.application.manager;
 import kr.co.hanipactor.application.manager.model.*;
 import kr.co.hanipactor.application.manager.specification.StoreSpecification;
 import kr.co.hanipactor.application.manager.specification.UserSpecification;
+import kr.co.hanipactor.application.store.StoreMapper;
 import kr.co.hanipactor.application.store.StoreRepository;
 import kr.co.hanipactor.application.storecategory.StoreCategoryRepository;
 import kr.co.hanipactor.application.user.UserMapper;
@@ -42,6 +43,7 @@ public class ManagerService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final StoreRepository storeRepository;
+    private final StoreMapper storeMapper;
     private final StoreCategoryRepository storeCategoryRepository;
 
     // 관리자 로그인
@@ -219,33 +221,30 @@ public class ManagerService {
         }
     }
 
-    // 가입자 수 통계
-    public List<UserStatsRes> getUserStats(UserStatsReq req) {
-        String type = req.getType().toUpperCase();
-
-        // 3개의 기간이 들어가는 리스트를 만들고, 그 리스트에 선택한 날짜의 이전 2개 항목, 마지막으로 선택한 날짜를 넣는 과정(예를 들어, ?type=year&date=2025 이면 2023, 2024, 2025)
+    // 3개의 기간을 리스트에 넣는 메소드
+    public List<String> addPeriodList(String type, String date) {
         List<String> periods = new ArrayList<>(3);
         switch (type) {
             case "YEAR":
-                int year = Integer.parseInt(req.getDate());
+                int year = Integer.parseInt(date);
                 for (int i = 2; i >= 0; i--) {
                     periods.add(String.valueOf(year - i));
                 }
                 break;
             case "MONTH":
-                LocalDate month = LocalDate.parse(req.getDate() + "-01");
+                LocalDate month = LocalDate.parse(date + "-01");
                 for (int i = 2; i >= 0; i--) {
                     periods.add(month.minusMonths(i).toString());
                 }
                 break;
             case "WEEK":
-                LocalDate week = LocalDate.parse(req.getDate());
+                LocalDate week = LocalDate.parse(date);
                 for (int i = 2; i >= 0; i--) {
                     periods.add(week.minusWeeks(i).toString());
                 }
                 break;
             case "DAY":
-                LocalDate day = LocalDate.parse(req.getDate());
+                LocalDate day = LocalDate.parse(date);
                 for (int i = 2; i >= 0; i--) {
                     periods.add(day.minusDays(i).toString());
                 }
@@ -254,10 +253,34 @@ public class ManagerService {
                 throw new IllegalArgumentException("잘못된 날짜 타입을 입력하였습니다.");
         }
 
+        return periods;
+    }
+
+    // 가입자 수 통계
+    public List<UserStatsRes> getUserStats(UserStatsReq req) {
+        String type = req.getType().toUpperCase();
+
+        // 3개의 기간이 들어가는 리스트를 만들고, 그 리스트에 선택한 날짜의 이전 2개 항목, 마지막으로 선택한 날짜를 넣는 과정(예를 들어, ?type=year&date=2025 이면 2023, 2024, 2025)
+        List<String> periods = addPeriodList(type, req.getDate());
+
         UserStatsDto dto = UserStatsDto.builder()
                                        .type(type)
                                        .periods(periods)
                                        .build();
+
+        return userMapper.findStatsByDate(dto);
+    }
+
+    // 가게 등록 수 통계
+    public List<UserStatsRes> getStoreStats(StoreStatsReq req) {
+        String type = req.getType().toUpperCase();
+
+        List<String> periods = addPeriodList(type, req.getDate());
+
+        UserStatsDto dto = UserStatsDto.builder()
+                .type(type)
+                .periods(periods)
+                .build();
 
         return userMapper.findStatsByDate(dto);
     }
