@@ -5,6 +5,7 @@ import kr.co.hanipactor.application.manager.specification.StoreSpecification;
 import kr.co.hanipactor.application.manager.specification.UserSpecification;
 import kr.co.hanipactor.application.store.StoreRepository;
 import kr.co.hanipactor.application.storecategory.StoreCategoryRepository;
+import kr.co.hanipactor.application.user.UserMapper;
 import kr.co.hanipactor.application.user.UserRepository;
 import kr.co.hanipactor.application.user.model.UserLoginDto;
 import kr.co.hanipactor.application.user.model.UserLoginReq;
@@ -27,6 +28,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +40,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ManagerService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
     private final StoreRepository storeRepository;
     private final StoreCategoryRepository storeCategoryRepository;
 
@@ -212,5 +217,48 @@ public class ManagerService {
         for (Store store : stores) {
             store.setIsActive(isActive);
         }
+    }
+
+    // 가입자 수 통계
+    public List<UserStatsRes> getUserStats(UserStatsReq req) {
+        String type = req.getType().toUpperCase();
+
+        // 3개의 기간이 들어가는 리스트를 만들고, 그 리스트에 선택한 날짜의 이전 2개 항목, 마지막으로 선택한 날짜를 넣는 과정(예를 들어, ?type=year&date=2025 이면 2023, 2024, 2025)
+        List<String> periods = new ArrayList<>(3);
+        switch (type) {
+            case "YEAR":
+                int year = Integer.parseInt(req.getDate());
+                for (int i = 2; i >= 0; i--) {
+                    periods.add(String.valueOf(year - i));
+                }
+                break;
+            case "MONTH":
+                LocalDate month = LocalDate.parse(req.getDate() + "-01");
+                for (int i = 2; i >= 0; i--) {
+                    periods.add(month.minusMonths(i).toString());
+                }
+                break;
+            case "WEEK":
+                LocalDate week = LocalDate.parse(req.getDate());
+                for (int i = 2; i >= 0; i--) {
+                    periods.add(week.minusWeeks(i).toString());
+                }
+                break;
+            case "DAY":
+                LocalDate day = LocalDate.parse(req.getDate());
+                for (int i = 2; i >= 0; i--) {
+                    periods.add(day.minusDays(i).toString());
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("잘못된 날짜 타입을 입력하였습니다.");
+        }
+
+        UserStatsDto dto = UserStatsDto.builder()
+                                       .type(type)
+                                       .periods(periods)
+                                       .build();
+
+        return userMapper.findStatsByDate(dto);
     }
 }

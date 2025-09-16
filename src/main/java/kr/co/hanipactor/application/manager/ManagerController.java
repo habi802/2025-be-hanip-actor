@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -74,5 +75,12 @@ public class ManagerController {
                                                                   @RequestParam int isActive) {
         managerService.patchIsActiveInStore(ids, isActive);
         return ResponseEntity.ok(ResultResponse.success("가게 수정 완료"));
+    }
+
+    // 가입자 수 통계
+    @GetMapping("/user/stats")
+    public ResponseEntity<ResultResponse<?>> getUserStats(@ModelAttribute UserStatsReq req) {
+        List<UserStatsRes> result = managerService.getUserStats(req);
+        return ResponseEntity.ok(ResultResponse.success(result));
     }
 }
