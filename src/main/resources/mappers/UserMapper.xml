@@ -111,7 +111,7 @@
                 SELECT DATE_FORMAT(w.week_start, '%x-W%v') AS period, COUNT(u.id) AS total
                 FROM weeks w
                 LEFT JOIN users u
-                ON STR_TO_DATE(CONCAT(YEARWEEK(u.created_at, 3),' Monday'), '%X%V %W') = w.week_start
+                ON DATE(DATE_SUB(o.created_at, INTERVAL WEEKDAY(o.created_at) DAY)) = w.week_start
                 GROUP BY w.week_start
                 ORDER BY w.week_start ASC
             </when>
