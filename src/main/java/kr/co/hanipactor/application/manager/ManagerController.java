@@ -42,7 +42,7 @@ public class ManagerController {
     }
 
     // 유저 전체 조회
-    @GetMapping("/user")
+    @PostMapping("/user")
     public ResponseEntity<ResultResponse<?>> getUserList(@RequestBody UserListReq req) {
         PageResponse<UserListRes> result = managerService.getUserList(req);
         return ResponseEntity.ok(ResultResponse.success(result));
@@ -56,7 +56,7 @@ public class ManagerController {
     }
 
     // 가게 전체 조회
-    @GetMapping("/store")
+    @PostMapping("/store")
     public ResponseEntity<ResultResponse<?>> getStoreList(@RequestBody StoreListReq req) {
         PageResponse<StoreListRes> result = managerService.getStoreList(req);
         return ResponseEntity.ok(ResultResponse.success(result));

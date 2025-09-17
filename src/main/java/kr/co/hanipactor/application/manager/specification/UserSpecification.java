@@ -12,6 +12,15 @@ import java.time.LocalDateTime;
 
 // 유저 검색 조건을 리턴하는 메소드가 들어있는 클래스
 public class UserSpecification {
+    public static Specification<User> getRole() {
+        return (root, query, cb) -> {
+            return cb.or(
+                cb.equal(root.get("role"), "01"),
+                cb.equal(root.get("role"), "02")
+            );
+        };
+    }
+
     public static Specification<User> hasStartDate(String startDate) {
         return (root, query, cb) -> {
             if (startDate == null || startDate.isEmpty()) {
@@ -60,17 +69,16 @@ public class UserSpecification {
 
     public static Specification<User> hasAddress(String address) {
         return (root, query, cb) -> {
-            // User 엔터티와 UserAddress 엔터티를 inner join 함
-            Join<User, UserAddress> join = root.join("addresses", JoinType.INNER);
+            if (address == null || address.isEmpty()) {
+                return null;
+            }
+
+            // User 엔터티와 UserAddress 엔터티를 left join 함
+            Join<User, UserAddress> join = root.join("addresses", JoinType.LEFT);
 
             // isMain 컬럼이 1인(즉, 메인 주소인) 조건을 Predicate 타입의 변수에 저장
             // Predicate 타입은 'boolean 값을 리턴하는 함수형 인터페이스' 라고 함
             Predicate mainPredicate = cb.equal(join.get("isMain"), 1);
-
-            if (address == null || address.isEmpty()) {
-                // 검색 창에 주소를 입력하지 않았으면 기본 조건(메인 주소인 것)만 리턴
-                return mainPredicate;
-            }
 
             Predicate searchPredicate = cb.or(
                 cb.like(join.get("postcode"), "%" + address + "%"),
@@ -104,7 +112,7 @@ public class UserSpecification {
 
     public static Specification<User> hasProviderType(String providerType) {
         return (root, query, cb) -> {
-            if (providerType == null || providerType.isEmpty()) {
+            if (providerType == null || providerType.isEmpty() || "00".equals(providerType)) {
                 return null;
             }
 
@@ -114,7 +122,7 @@ public class UserSpecification {
 
     public static Specification<User> hasRole(String role) {
         return (root, query, cb) -> {
-            if (role == null || role.isEmpty()) {
+            if (role == null || role.isEmpty() || "00".equals(role)) {
                 return null;
             }
 
