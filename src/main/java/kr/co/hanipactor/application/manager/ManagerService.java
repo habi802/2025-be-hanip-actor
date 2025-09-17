@@ -119,7 +119,7 @@ public class ManagerService {
             }
         ).toList();
 
-        return new PageResponse<>(result);
+        return new PageResponse<>(result, page.getTotalElements(), page.getTotalPages(), page.getSize(), page.getNumber() + 1);
     }
 
     // 유저 상세 조회(Action 호출용)
@@ -170,7 +170,7 @@ public class ManagerService {
             }
         ).toList();
 
-        return new PageResponse<>(result);
+        return new PageResponse<>(result, page.getTotalElements(), page.getTotalPages(), page.getSize(), page.getNumber() + 1);
     }
 
     // 가게 상세 조회
