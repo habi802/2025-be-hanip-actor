@@ -66,12 +66,12 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         cookieUtils.setCookie(res, constJwt.getAccessTokenCookieName()
                 , accessToken
                 , constJwt.getAccessTokenCookieValiditySeconds()
-                , constJwt.getAccessTokenCookiePath());
+                , constJwt.getAccessTokenCookiePath(), null);
 
         cookieUtils.setCookie(res, constJwt.getRefreshTokenCookieName()
                 , refreshToken
                 , constJwt.getRefreshTokenCookieValiditySeconds()
-                , constJwt.getRefreshTokenCookiePath());
+                , constJwt.getRefreshTokenCookiePath(), null);
 
         /*
             쿼리스트링 생성
