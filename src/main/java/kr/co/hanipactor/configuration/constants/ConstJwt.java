@@ -16,6 +16,8 @@ public class ConstJwt {
     private final String claimKey;
     private final String secretKey;
 
+    private final String domain;
+
     private final String accessTokenCookieName;
     private final String accessTokenCookiePath;
     private final int accessTokenCookieValiditySeconds;
