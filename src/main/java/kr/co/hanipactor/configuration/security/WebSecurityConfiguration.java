@@ -34,7 +34,7 @@ public class WebSecurityConfiguration {
                 .httpBasic(httpBasicSpec -> httpBasicSpec.disable())
                 .formLogin(formLoginSpec -> formLoginSpec.disable())
                 .csrf(csrfSpec -> csrfSpec.disable())
-                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
+                //.cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(req -> req
                         // 인증 없이 허용할 API들
                         .requestMatchers("/api/user/login", "/api/user/join", "/api/hanip-manager/actor/login", "/api/store").permitAll()
@@ -47,7 +47,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/feed").hasAnyRole(EnumUserRole.CUSTOMER.name())
 
                         // 관리자 계정만 가능한 API
-                        .requestMatchers("/api/hanip-manager/actor/**").hasRole(EnumUserRole.MANAGER.name())
+                        //.requestMatchers("/api/hanip-manager/actor/**").hasRole(EnumUserRole.MANAGER.name())
 
                         // 로그인한 계정만 가능한 API
                         .requestMatchers("/api/feed").authenticated()
@@ -63,16 +63,16 @@ public class WebSecurityConfiguration {
 
 
     // ⭐️ CORS 설정
-    CorsConfigurationSource corsConfigurationSource() {
-        return request -> {
-            CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedHeaders(Collections.singletonList("*"));
-            config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Collections.singletonList("*")); // ⭐️ 허용할 origin
-            config.setAllowCredentials(true);
-            return config;
-        };
-    }
+//    CorsConfigurationSource corsConfigurationSource() {
+//        return request -> {
+//            CorsConfiguration config = new CorsConfiguration();
+//            config.setAllowedHeaders(Collections.singletonList("*"));
+//            config.setAllowedMethods(Collections.singletonList("*"));
+//            config.setAllowedOriginPatterns(Collections.singletonList("*")); // ⭐️ 허용할 origin
+//            config.setAllowCredentials(true);
+//            return config;
+//        };
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
