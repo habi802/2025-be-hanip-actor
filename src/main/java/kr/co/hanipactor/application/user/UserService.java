@@ -136,19 +136,25 @@ public class UserService {
 
         // 비밀번호 일치 확인
         if (user == null || !BCrypt.checkpw(req.getLoginPw(), user.getLoginPw())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "아이디/비밀번호를 확인해 주세요.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "아이디/비밀번호를 확인해 주세요.");
         }
-        Integer storeId = storeMapper.findStoreIdByUserId(user.getId());
 
-        EnumUserRole role = user.getRole();
+        // 유저 롤 확인
+        if (!user.getRole().equals(req.getRole())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "role을 확인해주세요.");
+        }
+
+        Integer storeId = 0;
+        if (user.getRole() == EnumUserRole.OWNER) {
+            storeId = storeMapper.findStoreIdByUserId(user.getId());
+        }
 
         JwtUser jwtUser =  new JwtUser(user.getId(), user.getRole());
 
         UserLoginRes userLoginRes = UserLoginRes.builder()
                 .id(user.getId())
-                .storeId(user.getRole() == EnumUserRole.CUSTOMER ? 0 : storeId)
-                .role(role)
-                .loginPw(user.getLoginPw())
+                .storeId(storeId)
+                .role(user.getRole())
                 .build();
 
         return UserLoginDto.builder()
