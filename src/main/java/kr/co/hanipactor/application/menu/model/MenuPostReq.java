@@ -13,8 +13,6 @@ import java.util.List;
 @ToString
 public class MenuPostReq {
     private int id;
-    private int userId;
-    private int storeId;
     private String name;
     private String comment;
     private int price;

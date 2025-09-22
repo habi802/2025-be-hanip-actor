@@ -36,13 +36,12 @@ public class MenuService {
                 .id(signedUserId)
                 .build();
 
-        Store store = Store.builder()
-                .id(req.getStoreId())
-                .build();
+        Store store = storeRepository.findByUserId(signedUserId).orElseThrow(
+                () -> new IllegalArgumentException("해당 사장님의 가게가 없습니다."));
 
         String savedFileName = null;
         if(pic != null) {
-            savedFileName = imgUploadManager.saveStorePic(req.getStoreId(), pic);
+            savedFileName = imgUploadManager.saveStorePic(store.getId(), pic);
         }
 
         // 메뉴 저장
@@ -191,8 +190,7 @@ public class MenuService {
         menu.setName(req.getName());
         menu.setPrice(req.getPrice());
         menu.setComment(req.getComment());
-        EnumMenuType menuType = EnumMenuType.fromCode(req.getMenuType());
-        menu.setMenuType(menuType);
+        menu.setMenuType(req.getMenuType());
 
         // 3. 메뉴 이미지 수정
         if (menuImage != null) {
