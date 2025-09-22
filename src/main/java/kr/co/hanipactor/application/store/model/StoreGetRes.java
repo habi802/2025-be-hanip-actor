@@ -1,5 +1,6 @@
 package kr.co.hanipactor.application.store.model;
 
+import kr.co.hanipactor.configuration.enumcode.model.EnumDayOfWeek;
 import kr.co.hanipactor.entity.Store;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,8 +33,9 @@ public class StoreGetRes {
     private String licensePath;
     private String comment;
     private String eventComment;
-    private String openTIme;
+    private String openTime;
     private String closeTime;
+    private EnumDayOfWeek closedDay;
     private String openDate;
 
     public static StoreGetRes of(Store store) {
@@ -58,8 +60,9 @@ public class StoreGetRes {
                 .licensePath(store.getLicensePath())
                 .comment(store.getComment())
                 .eventComment(store.getEventComment())
-                .openTIme(store.getOpenTime())
+                .openTime(store.getOpenTime())
                 .closeTime(store.getCloseTime())
+                .closedDay(store.getClosedDay())
                 .openDate(store.getOpenDate())
                 .build();
     }
