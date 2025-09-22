@@ -4,6 +4,8 @@ import jakarta.transaction.Transactional;
 import kr.co.hanipactor.application.menu.model.*;
 import kr.co.hanipactor.application.menuoption.MenuOptionRepository;
 import kr.co.hanipactor.application.menuoption.model.MenuOptionPostReq;
+import kr.co.hanipactor.application.store.StoreRepository;
+import kr.co.hanipactor.application.user.UserRepository;
 import kr.co.hanipactor.configuration.enumcode.model.EnumMenuType;
 import kr.co.hanipactor.configuration.utils.ImgUploadManager;
 import kr.co.hanipactor.entity.Menu;
@@ -24,7 +26,9 @@ import java.util.stream.Collectors;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuOptionRepository menuOptionRepository;
+    private final StoreRepository storeRepository;
     private final ImgUploadManager imgUploadManager;
+    private final UserRepository userRepository;
 
     @Transactional
     public void saveMenu(Long signedUserId, MenuPostReq req, MultipartFile pic) {
@@ -105,6 +109,32 @@ public class MenuService {
             result.add(res);
         }
 
+        return result;
+    }
+    // 가게 사장 메뉴 조회
+    public List<MenuListGetRes> getOwnerMenuList(Long signedUserId) {
+        Store store = storeRepository.findByUserId(signedUserId).orElse(null);
+        List<Menu> menus = menuRepository.findByStore_Id(store.getId());
+        Map<EnumMenuType, List<Menu>> sortedMenus = menus.stream()
+                .collect(Collectors.groupingBy(Menu::getMenuType));
+
+        List<MenuListGetRes> result = new ArrayList<>(sortedMenus.size());
+        for (EnumMenuType menuType : sortedMenus.keySet()) {
+            MenuListGetRes res = MenuListGetRes.builder()
+                    .menuType(menuType.getValue())
+                    .menus(sortedMenus.get(menuType).stream()
+                            .map(menu -> MenuListGetRes.Menu.builder()
+                                    .menuId(menu.getId())
+                                    .name(menu.getName())
+                                    .price(menu.getPrice())
+                                    .comment(menu.getComment())
+                                    .imagePath(menu.getImagePath())
+                                    .build())
+                            .toList())
+                    .build();
+
+            result.add(res);
+        }
         return result;
     }
 

@@ -49,6 +49,18 @@ public class MenuController {
         }
     }
 
+    // 가게 사장 메뉴 조회
+    @GetMapping("/owner")
+    public ResponseEntity<ResultResponse<?>> getMenu(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        Long userId = userPrincipal.getSignedUserId();
+        List<MenuListGetRes> result = menuService.getOwnerMenuList(userId);
+        return result == null
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ResultResponse.fail(400, "등록된 메뉴가 없습니다."))
+                : ResponseEntity.ok(ResultResponse.success(result));
+    }
+
+
     // 가게 메뉴 조회
     @GetMapping
     public ResponseEntity<ResultResponse<?>> getMenuList(@RequestParam Long storeId) {
