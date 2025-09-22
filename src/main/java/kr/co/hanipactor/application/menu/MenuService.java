@@ -154,6 +154,7 @@ public class MenuService {
                                                      .filter(option -> option.getParent() == null)
                                                      .map(option -> MenuGetRes.Option.builder()
                                                                                      .optionId(option.getId())
+                                                                                     .isRequired(option.getIsRequired())
                                                                                      .comment(option.getComment())
                                                                                      .price(option.getPrice())
                                                                                      .children(option.getChildren().stream()
@@ -168,6 +169,7 @@ public class MenuService {
 
         return MenuGetRes.builder()
                          .menuId(menuId)
+                         .menuType(menu.getMenuType())
                          .name(menu.getName())
                          .price(menu.getPrice())
                          .comment(menu.getComment())
