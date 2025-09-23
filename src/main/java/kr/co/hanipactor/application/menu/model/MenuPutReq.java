@@ -1,5 +1,6 @@
 package kr.co.hanipactor.application.menu.model;
 
+import kr.co.hanipactor.configuration.enumcode.model.EnumMenuType;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -12,7 +13,7 @@ public class MenuPutReq {
     private String name;
     private int price;
     private String comment;
-    private String menuType;
+    private EnumMenuType menuType;
     private List<Option> options;
 
     @Getter

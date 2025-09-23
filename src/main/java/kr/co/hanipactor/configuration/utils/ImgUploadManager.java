@@ -44,26 +44,20 @@ public class ImgUploadManager {
         return String.format("%s/%s/%d",  constFile.getUploadDirectory(), constFile.getStorePic(), userId);
     }
 
+    private String makeStoreMenuDirectoryPath(long storeId, long menuId) {
+        return String.format("%s/%s/%d/%s/%d",  constFile.getUploadDirectory(), constFile.getStorePic(),storeId,constFile.getStoreMenuPic(), menuId);
+    }
+
     //프로파일 유저 폴더 삭제
     public void removeProfileDirectory(long userId) {
         String directory = makeStoreDirectoryPath(userId);
         myFileUtils.deleteFolder(directory, true);
     }
 
-    private String makeFeedDirectoryPath(long feedId) {
-        return String.format("%s/%s/%d",  constFile.getUploadDirectory(), constFile.getFeedPic(), feedId);
-    }
-
-    //피드 폴더 삭제
-    public void removeFeedDirectory(long feedId) {
-        String directory = makeFeedDirectoryPath(feedId);
-        myFileUtils.deleteFolder(directory, true);
-    }
-
     //저장한 파일명 리턴
-    public String saveStorePic(long userId, MultipartFile profilePicFile) {
+    public String saveStorePic(long storeId, MultipartFile profilePicFile) {
         //폴더 생성
-        String directory = makeStoreDirectoryPath(userId);
+        String directory = makeStoreDirectoryPath(storeId);
         myFileUtils.makeFolders(directory);
 
         String randomFileName = myFileUtils.makeRandomFileName(profilePicFile);
@@ -75,6 +69,29 @@ public class ImgUploadManager {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "가게 이미지 저장에 실패하였습니다.");
         }
         return randomFileName;
+    }
+
+    //저장한 파일명 리턴
+    public String saveStoreMenuPic(long storeId, long menuId, MultipartFile profilePicFile) {
+        //폴더 생성
+        String directory = makeStoreMenuDirectoryPath(storeId, menuId);
+        myFileUtils.makeFolders(directory);
+
+        String randomFileName = myFileUtils.makeRandomFileName(profilePicFile);
+        String savePath = directory + "/" + randomFileName;
+
+        try {
+            myFileUtils.transferTo(profilePicFile, savePath);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "가게 메뉴 이미지 저장에 실패하였습니다.");
+        }
+        return randomFileName;
+    }
+
+    //프로파일 유저 폴더 삭제
+    public void removeMenuDirectory(long storeId, long menuId) {
+        String directory = makeStoreMenuDirectoryPath(storeId, menuId);
+        myFileUtils.deleteFolder(directory, true);
     }
 
     //저장한 파일명 리턴

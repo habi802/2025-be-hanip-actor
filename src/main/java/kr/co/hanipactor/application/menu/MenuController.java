@@ -24,7 +24,7 @@ public class MenuController {
     @PostMapping
     public ResponseEntity<ResultResponse<?>> saveMenu(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                       @RequestPart MenuPostReq req,
-                                                      @RequestPart MultipartFile pic) {
+                                                      @RequestPart(required = false) MultipartFile pic) {
         try {
             log.info("signedUserId: {}", userPrincipal.getSignedUserId());
 
@@ -84,8 +84,8 @@ public class MenuController {
     // 메뉴 수정
     @PutMapping
     public ResponseEntity<ResultResponse<?>> updateMenu(@RequestPart MenuPutReq req,
-                                                        @RequestPart(required = false) MultipartFile menuImage) {
-        int result = menuService.updateMenu(req, menuImage);
+                                                        @RequestPart(required = false) MultipartFile pic) {
+        int result = menuService.updateMenu(req, pic);
         return result == 0
                 ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                 .body(ResultResponse.fail(400, "등록된 메뉴가 없습니다."))
