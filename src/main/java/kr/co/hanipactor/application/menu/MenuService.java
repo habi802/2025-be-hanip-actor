@@ -124,6 +124,7 @@ public class MenuService {
                     .menuType(menuType.getValue())
                     .menus(sortedMenus.get(menuType).stream()
                             .map(menu -> MenuListGetRes.Menu.builder()
+                                    .storeId(menu.getStore().getId())
                                     .menuId(menu.getId())
                                     .name(menu.getName())
                                     .price(menu.getPrice())
@@ -169,6 +170,8 @@ public class MenuService {
 
         return MenuGetRes.builder()
                          .storeId(menu.getStore().getId())
+                         .isHide(menu.getIsHide())
+                         .isSoldOut(menu.getIsSoldOut())
                          .menuId(menuId)
                          .menuType(menu.getMenuType())
                          .name(menu.getName())
