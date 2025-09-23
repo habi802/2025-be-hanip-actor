@@ -1,6 +1,7 @@
 package kr.co.hanipactor.application.store.model;
 
 import kr.co.hanipactor.configuration.enumcode.model.EnumDayOfWeek;
+import kr.co.hanipactor.configuration.enumcode.model.EnumStoreCategory;
 import kr.co.hanipactor.entity.Store;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -37,8 +39,9 @@ public class StoreGetRes {
     private String closeTime;
     private EnumDayOfWeek closedDay;
     private String openDate;
+    private List<EnumStoreCategory> categories;
 
-    public static StoreGetRes of(Store store) {
+    public static StoreGetRes of(Store store, List<EnumStoreCategory> categories) {
         return StoreGetRes.builder()
                 .id(store.getId())
                 .favorites(store.getFavorites())
@@ -64,6 +67,7 @@ public class StoreGetRes {
                 .closeTime(store.getCloseTime())
                 .closedDay(store.getClosedDay())
                 .openDate(store.getOpenDate())
+                .categories(categories)
                 .build();
     }
 }
