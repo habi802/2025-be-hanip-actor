@@ -24,7 +24,7 @@ public class MenuController {
     @PostMapping
     public ResponseEntity<ResultResponse<?>> saveMenu(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                       @RequestPart MenuPostReq req,
-                                                      @RequestPart MultipartFile pic) {
+                                                      @RequestPart(required = false) MultipartFile pic) {
         try {
             log.info("signedUserId: {}", userPrincipal.getSignedUserId());
 
