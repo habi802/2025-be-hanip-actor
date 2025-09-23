@@ -63,14 +63,28 @@ public class StoreService {
     public StoreGetRes findOwnerStore(Long signedUserId) {
         Store store = storeRepository.findByUserId(signedUserId)
                 .orElseThrow(() -> new RuntimeException("해당 유저가 관리하는 가게가 아닙니다."));
-        return StoreGetRes.of(store);
+
+        List<String> categoryCodes = storeCategoryMapper.findByStoreId(store.getId());
+
+        List<EnumStoreCategory> categories = categoryCodes.stream()
+                                                          .map(code -> EnumStoreCategory.valueOfCode(code))
+                                                          .toList();
+
+        return StoreGetRes.of(store, categories);
     }
 
     // 가게 상세 조회(고객)
     public StoreGetRes findCustomerStore(long storeId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new RuntimeException("해당 가게가 없습니다."));
-        return StoreGetRes.of(store);
+
+        List<String> categoryCodes = storeCategoryMapper.findByStoreId(store.getId());
+
+        List<EnumStoreCategory> categories = categoryCodes.stream()
+                                                          .map(code -> EnumStoreCategory.valueOfCode(code))
+                                                          .toList();
+
+        return StoreGetRes.of(store, categories);
     }
 
     // 가게 정보 수정
