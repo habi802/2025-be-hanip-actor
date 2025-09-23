@@ -13,4 +13,5 @@ public class ConstFile {
     private final String uploadDirectory;
     private final String feedPic;
     private final String storePic;
+    private final String storeMenuPic;
 }

@@ -11,6 +11,7 @@ import java.util.List;
 @Builder
 @ToString
 public class MenuGetRes {
+    private Long storeId;
     private Long menuId;
     private String name;
     private int price;
