@@ -39,11 +39,6 @@ public class MenuService {
         Store store = storeRepository.findByUserId(signedUserId).orElseThrow(
                 () -> new IllegalArgumentException("해당 사장님의 가게가 없습니다."));
 
-        String savedFileName = null;
-        if(pic != null) {
-            savedFileName = imgUploadManager.saveStorePic(store.getId(), pic);
-        }
-
         // 메뉴 저장
         Menu menu = Menu.builder()
                 .store(store)
@@ -51,9 +46,15 @@ public class MenuService {
                 .name(req.getName())
                 .comment(req.getComment())
                 .price(req.getPrice())
-                .imagePath(savedFileName)
+                .imagePath(null)
                 .menuType(req.getMenuType())
                 .build();
+        menuRepository.save(menu);
+
+        if(pic != null) {
+            String savedFileName = imgUploadManager.saveStoreMenuPic(store.getId(), menu.getId(), pic);
+            menu.setImagePath(savedFileName);
+        }
         menuRepository.save(menu);
 
         // 메뉴 옵션 저장
@@ -167,6 +168,7 @@ public class MenuService {
                                                      .toList();
 
         return MenuGetRes.builder()
+                         .storeId(menu.getStore().getId())
                          .menuId(menuId)
                          .menuType(menu.getMenuType())
                          .name(menu.getName())
@@ -179,7 +181,7 @@ public class MenuService {
 
     // 메뉴 수정
     @Transactional
-    public int updateMenu(MenuPutReq req, MultipartFile menuImage) {
+    public int updateMenu(MenuPutReq req, MultipartFile pic) {
         // 1. 입력한 id를 가진 메뉴가 없을 경우 null 리턴
         Menu menu = menuRepository.findById(req.getMenuId()).orElse(null);
         if (menu == null) {
@@ -193,8 +195,13 @@ public class MenuService {
         menu.setMenuType(req.getMenuType());
 
         // 3. 메뉴 이미지 수정
-        if (menuImage != null) {
+        if (pic != null) {
+            if (menu.getImagePath() != null) {
+                imgUploadManager.removeMenuDirectory(menu.getStore().getId(), menu.getId());
+            }
 
+            String savedFileName = imgUploadManager.saveStoreMenuPic(menu.getStore().getId(), menu.getId(), pic);
+            menu.setImagePath(savedFileName);
         }
 
         // 4. 옵션 수정
@@ -305,6 +312,10 @@ public class MenuService {
             return 0;
         }
 
+        List<MenuOption> menuOption = menuOptionRepository.findByMenu_Id(menuId);
+        for (MenuOption option : menuOption) {
+            menuOptionRepository.deleteById(option.getId());
+        }
         menuRepository.deleteById(menuId);
         return 1;
     }
