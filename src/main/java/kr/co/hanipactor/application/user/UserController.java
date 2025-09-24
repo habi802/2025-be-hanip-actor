@@ -148,23 +148,19 @@ public class UserController {
         );
     }
 
-    // 유저 메인 주소 변경
+    // 유저 기본 주소 변경
     @PatchMapping("/adds/main/{address_id}")
-    public ResponseEntity<ResultResponse<Integer>> patchUserAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                                    @PathVariable(value = "address_id") Long addressId) {
+    public ResponseEntity<ResultResponse<?>> patchUserAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                              @PathVariable(value = "address_id") Long addressId) {
         Long signedUserId = userPrincipal.getSignedUserId();
-        Integer result = userService.patchUserAddress(addressId, signedUserId);
-        return ResponseEntity.ok(
-                new ResultResponse<>(200, "유저 주소 메인 변경 성공", result)
-        );
+        userService.patchUserAddress(signedUserId, addressId);
+        return ResponseEntity.ok(ResultResponse.success("유저 기본 주소 변경 성공!"));
     }
 
     // 유저 주소 삭제
     @DeleteMapping("/adds/{address_id}")
-    public ResponseEntity<ResultResponse<Integer>> deleteUserAddress(@PathVariable(value = "address_id") Long addressId) {
-        Integer result = userService.deleteUserAddress(addressId);
-        return ResponseEntity.ok(
-                new ResultResponse<>(200, "유저 주소 삭제 성공", result)
-        );
+    public ResponseEntity<ResultResponse<?>> deleteUserAddress(@PathVariable(value = "address_id") Long addressId) {
+        userService.deleteUserAddress(addressId);
+        return ResponseEntity.ok(ResultResponse.success("유저 주소 삭제 성공!"));
     }
 }

@@ -17,6 +17,9 @@ public class UserGetRes {
     private String phone;
     private String email;
     private String imagePath;
+    private String postcode;
+    private String address;
+    private String addressDetail;
     private EnumUserRole role;
     private LocalDateTime created;
 }
