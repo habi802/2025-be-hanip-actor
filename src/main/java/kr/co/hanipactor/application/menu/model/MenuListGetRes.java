@@ -17,9 +17,12 @@ public class MenuListGetRes {
     @Builder
     @ToString
     public static class Menu {
+        private Long storeId;
         private Long menuId;
         private String name;
         private int price;
+        private int isHide;
+        private int isSoldOut;
         private String comment;
         private String imagePath;
     }

@@ -17,6 +17,8 @@ public class MenuGetRes {
     private int price;
     private String comment;
     private String imagePath;
+    private int isHide;
+    private int isSoldOut;
     private EnumMenuType menuType;
     private List<Option> options;
 
