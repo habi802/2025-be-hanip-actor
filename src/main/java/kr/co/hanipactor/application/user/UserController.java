@@ -6,6 +6,7 @@ import kr.co.hanipactor.application.user.model.*;
 import kr.co.hanipactor.configuration.jwt.JwtTokenManager;
 import kr.co.hanipactor.configuration.model.ResultResponse;
 import kr.co.hanipactor.configuration.model.UserPrincipal;
+import kr.co.hanipactor.entity.UserAddress;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -86,15 +87,12 @@ public class UserController {
     }
 
     // 유저 주소 등록
-    @PostMapping("/adds")
+    @PostMapping("/address")
     public ResponseEntity<ResultResponse<?>> saveUserAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                             @RequestPart UserAddressPostReq req) {
+                                                             @RequestBody UserAddressPostReq req) {
         Long signedUserId = userPrincipal.getSignedUserId();
-        Integer result = userService.saveUserAdds(signedUserId, req);
-        return ResponseEntity.ok(
-                new ResultResponse<>(200, "유저 주소 등록 성공", result)
-        );
-
+        UserAddress result = userService.saveUserAdds(signedUserId, req);
+        return ResponseEntity.ok(ResultResponse.success(result));
     }
 
     // 유저 리스트 조회 (서버 api)
@@ -118,7 +116,7 @@ public class UserController {
     }
 
     // 유저 주소 조회
-    @GetMapping("/adds")
+    @GetMapping("/address")
     public ResponseEntity<ResultResponse<List<UserAddressGetRes>>> getUserAddress(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         Long signedUserId = userPrincipal.getSignedUserId();
         List<UserAddressGetRes> result = userService.getUserAddress(signedUserId);
@@ -141,15 +139,13 @@ public class UserController {
 
     // 유저 주소 수정
     @PutMapping("/address")
-    public ResponseEntity<ResultResponse<Integer>> updateUserAddress(@RequestBody UserAddressPutReq req) {
-        Integer result = userService.updateUserAdds(req);
-        return ResponseEntity.ok(
-                new ResultResponse<>(200, "유저 주소 수정 성공", result)
-        );
+    public ResponseEntity<ResultResponse<?>> updateUserAddress(@RequestBody UserAddressPutReq req) {
+        userService.updateUserAdds(req);
+        return ResponseEntity.ok(ResultResponse.success("유저 주소 삭제 성공!"));
     }
 
     // 유저 기본 주소 변경
-    @PatchMapping("/adds/main/{address_id}")
+    @PatchMapping("/address/{address_id}")
     public ResponseEntity<ResultResponse<?>> patchUserAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                               @PathVariable(value = "address_id") Long addressId) {
         Long signedUserId = userPrincipal.getSignedUserId();
@@ -158,7 +154,7 @@ public class UserController {
     }
 
     // 유저 주소 삭제
-    @DeleteMapping("/adds/{address_id}")
+    @DeleteMapping("/address/{address_id}")
     public ResponseEntity<ResultResponse<?>> deleteUserAddress(@PathVariable(value = "address_id") Long addressId) {
         userService.deleteUserAddress(addressId);
         return ResponseEntity.ok(ResultResponse.success("유저 주소 삭제 성공!"));

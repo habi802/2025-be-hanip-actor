@@ -163,20 +163,19 @@ public class UserService {
                 .build();
     }
 
-    // 유조 주소 등록
-    public Integer saveUserAdds(Long signedUserId, UserAddressPostReq req) {
-        User user = userRepository.findById(signedUserId).orElseThrow(
-                () -> new RuntimeException("해당 유저가 존재하지 않습니다."));
+    // 유저 주소 등록
+    public UserAddress saveUserAdds(Long signedUserId, UserAddressPostReq req) {
+        User user = userRepository.findById(signedUserId)
+                                  .orElseThrow(() -> new RuntimeException("해당 유저가 존재하지 않습니다."));
 
-        userAddressRepository.save(UserAddress.builder()
-                .user(user)
-                .title(req.getTitle())
-                .isMain(0)
-                .postcode(req.getPostcode())
-                .address(req.getAddress())
-                .addressDetail(req.getAddressDetail())
-                .build());
-        return 1;
+        return userAddressRepository.save(UserAddress.builder()
+                                              .user(user)
+                                              .title(req.getTitle())
+                                              .isMain(0)
+                                              .postcode(req.getPostcode())
+                                              .address(req.getAddress())
+                                              .addressDetail(req.getAddressDetail())
+                                              .build());
     }
 
     // 유저 비밀번호 체크
@@ -279,7 +278,7 @@ public class UserService {
 
     // 유저 주소 수정
     @Transactional
-    public Integer updateUserAdds(UserAddressPutReq req) {
+    public void updateUserAdds(UserAddressPutReq req) {
         UserAddress userAddress = userAddressRepository.findById(req.getId()).orElseThrow();
 
         if (req.getTitle() != null && !req.getTitle().isBlank()) {
@@ -295,7 +294,6 @@ public class UserService {
             userAddress.setAddressDetail(req.getAddressDetail());
         }
         userAddressRepository.save(userAddress);
-        return 1;
     }
 
     // 유저 기본 주소 변경
