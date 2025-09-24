@@ -218,9 +218,9 @@ public class UserService {
                          .phone(user.getPhone())
                          .email(user.getEmail())
                          .imagePath(user.getImagePath())
-                         .postcode(userAddress.getPostcode())
-                         .address(userAddress.getAddress())
-                         .addressDetail(userAddress.getAddressDetail())
+                         .postcode(userAddress != null ? userAddress.getPostcode() : null)
+                         .address(userAddress != null ? userAddress.getAddress() : null)
+                         .addressDetail(userAddress != null ? userAddress.getAddressDetail() : null)
                          .role(user.getRole())
                          .created(user.getCreatedAt())
                          .build();

@@ -21,6 +21,6 @@ public class TokenAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write("인증 필요");
+        response.getWriter().write("{\"message\": \"인증 필요\"}");
     }
 }
