@@ -21,6 +21,8 @@ public class MenuListGetRes {
         private Long menuId;
         private String name;
         private int price;
+        private int isHide;
+        private int isSoldOut;
         private String comment;
         private String imagePath;
     }
