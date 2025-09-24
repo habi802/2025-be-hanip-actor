@@ -19,13 +19,13 @@ public class UserAddressGetRes {
 
     public static UserAddressGetRes from(UserAddress userAddress) {
         return UserAddressGetRes.builder()
-                .id(userAddress.getId())
-                .userId(userAddress.getUser().getId())
-                .isMain(userAddress.getIsMain())
-                .title(userAddress.getTitle())
-                .postcode(userAddress.getPostcode())
-                .address(userAddress.getAddress())
-                .addressDetail(userAddress.getAddressDetail())
-                .build();
+                                .id(userAddress.getId())
+                                .userId(userAddress.getUser().getId())
+                                .isMain(userAddress.getIsMain())
+                                .title(userAddress.getTitle())
+                                .postcode(userAddress.getPostcode())
+                                .address(userAddress.getAddress())
+                                .addressDetail(userAddress.getAddressDetail())
+                                .build();
     }
 }

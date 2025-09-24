@@ -64,11 +64,11 @@ public class StoreService {
         Store store = storeRepository.findByUserId(signedUserId)
                 .orElseThrow(() -> new RuntimeException("해당 유저가 관리하는 가게가 아닙니다."));
 
-        List<String> categoryCodes = storeCategoryMapper.findByStoreId(store.getId());
-
-        List<EnumStoreCategory> categories = categoryCodes.stream()
-                                                          .map(code -> EnumStoreCategory.valueOfCode(code))
-                                                          .toList();
+        List<StoreCategory> storeCategories = storeCategoryRepository.findByStoreId(store.getId());
+        List<EnumStoreCategory> categories = new ArrayList<>();
+        for(StoreCategory storeCategory : storeCategories) {
+            categories.add(storeCategory.getStoreCategoryId().getCategory());
+        }
 
         return StoreGetRes.of(store, categories);
     }
@@ -78,11 +78,11 @@ public class StoreService {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new RuntimeException("해당 가게가 없습니다."));
 
-        List<String> categoryCodes = storeCategoryMapper.findByStoreId(store.getId());
-
-        List<EnumStoreCategory> categories = categoryCodes.stream()
-                                                          .map(code -> EnumStoreCategory.valueOfCode(code))
-                                                          .toList();
+        List<StoreCategory> storeCategories = storeCategoryRepository.findByStoreId(store.getId());
+        List<EnumStoreCategory> categories = new ArrayList<>();
+        for(StoreCategory storeCategory : storeCategories) {
+            categories.add(storeCategory.getStoreCategoryId().getCategory());
+        }
 
         return StoreGetRes.of(store, categories);
     }

@@ -45,6 +45,10 @@ public class Store extends UpdatedAt {
     @Comment("가게 이미지")
     private String imagePath;
 
+    @Column(length = 200)
+    @Comment("가게 배너 이미지")
+    private String bannerPath;
+
     @Column(nullable = false, length = 12)
     @Comment("우편 번호")
     private String postcode;

@@ -163,20 +163,19 @@ public class UserService {
                 .build();
     }
 
-    // 유조 주소 등록
-    public Integer saveUserAdds(Long signedUserId, UserAddressPostReq req) {
-        User user = userRepository.findById(signedUserId).orElseThrow(
-                () -> new RuntimeException("해당 유저가 존재하지 않습니다."));
+    // 유저 주소 등록
+    public UserAddress saveUserAdds(Long signedUserId, UserAddressPostReq req) {
+        User user = userRepository.findById(signedUserId)
+                                  .orElseThrow(() -> new RuntimeException("해당 유저가 존재하지 않습니다."));
 
-        userAddressRepository.save(UserAddress.builder()
-                .user(user)
-                .title(req.getTitle())
-                .isMain(0)
-                .postcode(req.getPostcode())
-                .address(req.getAddress())
-                .addressDetail(req.getAddressDetail())
-                .build());
-        return 1;
+        return userAddressRepository.save(UserAddress.builder()
+                                              .user(user)
+                                              .title(req.getTitle())
+                                              .isMain(0)
+                                              .postcode(req.getPostcode())
+                                              .address(req.getAddress())
+                                              .addressDetail(req.getAddressDetail())
+                                              .build());
     }
 
     // 유저 비밀번호 체크
@@ -209,23 +208,27 @@ public class UserService {
     // 유저 정보 조회
     public UserGetRes getUser(Long signedUserId) {
         User user = userRepository.findById(signedUserId)
-                .orElseThrow(() -> new RuntimeException("해당 유저가 존재하지 않습니다."));
+                                  .orElseThrow(() -> new RuntimeException("해당 유저가 존재하지 않습니다."));
+        UserAddress userAddress = userAddressRepository.findByUserIdAndIsMain(signedUserId, 1);
 
         return UserGetRes.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .loginId(user.getLoginId())
-                .phone(user.getPhone())
-                .email(user.getEmail())
-                .imagePath(user.getImagePath())
-                .role(user.getRole())
-                .created(user.getCreatedAt())
-                .build();
+                         .id(user.getId())
+                         .name(user.getName())
+                         .loginId(user.getLoginId())
+                         .phone(user.getPhone())
+                         .email(user.getEmail())
+                         .imagePath(user.getImagePath())
+                         .postcode(userAddress.getPostcode())
+                         .address(userAddress.getAddress())
+                         .addressDetail(userAddress.getAddressDetail())
+                         .role(user.getRole())
+                         .created(user.getCreatedAt())
+                         .build();
     }
 
     // 유저 주소 조회
     public List<UserAddressGetRes> getUserAddress(Long signedUserId) {
-        List<UserAddress> userAddress = userAddressRepository.findAllByUserId(signedUserId);
+        List<UserAddress> userAddress = userAddressRepository.findAllByUserIdOrderByIsMainDescCreatedAtAsc(signedUserId);
 
         return userAddress.stream()
                 .map(UserAddressGetRes::from)
@@ -275,7 +278,7 @@ public class UserService {
 
     // 유저 주소 수정
     @Transactional
-    public Integer updateUserAdds(UserAddressPutReq req) {
+    public void updateUserAdds(UserAddressPutReq req) {
         UserAddress userAddress = userAddressRepository.findById(req.getId()).orElseThrow();
 
         if (req.getTitle() != null && !req.getTitle().isBlank()) {
@@ -291,16 +294,18 @@ public class UserService {
             userAddress.setAddressDetail(req.getAddressDetail());
         }
         userAddressRepository.save(userAddress);
-        return 1;
     }
 
-    // 유저 메인 주소 변경
-    public Integer patchUserAddress(Long signedUserId, Long addressId) {
-        List<UserAddress> addresses = userAddressRepository.findAllByUserId(signedUserId);
-
-        if (addresses.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "등록된 주소가 없습니다.");
+    // 유저 기본 주소 변경
+    @Transactional
+    public void patchUserAddress(Long signedUserId, Long addressId) {
+        UserAddress userAddress = userAddressRepository.findById(addressId)
+                                                       .orElseThrow(() -> new RuntimeException("존재하지 않는 주소입니다."));
+        if (userAddress.getIsMain() == 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 기본 주소로 설정되어 있습니다.");
         }
+
+        List<UserAddress> addresses = userAddressRepository.findAllByUserIdOrderByIsMainDescCreatedAtAsc(signedUserId);
 
         boolean found = false;
         for (UserAddress address : addresses) {
@@ -313,15 +318,18 @@ public class UserService {
         }
 
         if (!found) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "해당 유저의 주소가 아닙니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 주소를 입력하였습니다.");
         }
-        return 1;
     }
 
     // 유저 주소 삭제
-    public Integer deleteUserAddress(Long addressId) {
-        UserAddress userAddress = userAddressRepository.findById(addressId).orElseThrow();
+    public void deleteUserAddress(Long addressId) {
+        UserAddress userAddress = userAddressRepository.findById(addressId)
+                                                       .orElseThrow(() -> new RuntimeException("존재하지 않는 주소입니다."));
+        if (userAddress.getIsMain() == 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "기본 주소는 삭제할 수 없습니다.");
+        }
+
         userAddressRepository.delete(userAddress);
-        return 1;
     }
 }
