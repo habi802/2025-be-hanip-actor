@@ -77,4 +77,12 @@ public class StoreController {
                            : ResponseEntity.ok(ResultResponse.success("평균 별점, 좋아요 수 수정완료"));
     }
 
+
+    // 배달원용 - 배달 음식 픽업할 가게의 주소 가져옴
+    @GetMapping("/rider/{storeId}")
+    public ResponseEntity<ResultResponse<?>> getStoreInRider(@PathVariable long storeId) {
+        String result = storeService.getStoreInRider(storeId);
+
+        return ResponseEntity.ok(ResultResponse.success(result));
+    }
 }
