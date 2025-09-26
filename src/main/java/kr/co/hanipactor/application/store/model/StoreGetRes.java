@@ -31,6 +31,7 @@ public class StoreGetRes {
     private String postCode;
     private String address;
     private String addressDetail;
+    private String bannerPath;
     private String imagePath;
     private String licensePath;
     private String comment;
@@ -59,6 +60,7 @@ public class StoreGetRes {
                 .postCode(store.getPostcode())
                 .address(store.getAddress())
                 .addressDetail(store.getAddressDetail())
+                .bannerPath(store.getBannerPath())
                 .imagePath(store.getImagePath())
                 .licensePath(store.getLicensePath())
                 .comment(store.getComment())
