@@ -32,8 +32,8 @@ constants:
 
     access-token-cookie-name: access-token
     access-token-cookie-path: / #모든 경로에서 access-token 값이 넘어온다.
-    access-token-cookie-validity-seconds: 900 # 15분 (s) 60 * 15
-    access-token-validity-milliseconds: 900_000 # 15분 (ms) 60 * 15 * 1000
+    access-token-cookie-validity-seconds: 86_400 # 15분 (s) 60 * 15
+    access-token-validity-milliseconds: 8_640_000 # 15분 (ms) 60 * 15 * 1000
 
     refresh-token-cookie-name: refresh-token
     refresh-token-cookie-path: /api/user/reissue #해당 path 때만 refresh-token 값이 넘어온다.
