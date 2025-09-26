@@ -203,4 +203,11 @@ public class StoreService {
         storeRepository.save(store);
         return 1;
     }
+
+    // 배달원용 - 배달 음식 픽업할 가게의 주소 가져옴
+    public String getStoreInRider(long storeId) {
+        Store store = storeRepository.findById(storeId).orElse(null);
+
+        return store.getPostcode() + ", " + store.getAddress() + (store.getAddressDetail() != null ? ", " + store.getAddressDetail() : "");
+    }
 }
