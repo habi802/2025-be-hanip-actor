@@ -260,7 +260,7 @@ public class ManagerService {
     public List<UserStatsRes> getUserStats(UserStatsReq req) {
         String type = req.getType().toUpperCase();
 
-        // 3개의 기간이 들어가는 리스트를 만들고, 그 리스트에 선택한 날짜의 이전 2개 항목, 마지막으로 선택한 날짜를 넣는 과정(예를 들어, ?type=year&date=2025 이면 2023, 2024, 2025)
+        // 3개의 기간이 들어가는 리스트를 만들고, 그 리스트에 선택한 날짜의 이전 2개 항목, 마지막으로 선택한 날짜를 넣는 과정(예를 들어, ?type=YEAR&date=2025 이면 2023, 2024, 2025)
         List<String> periods = addPeriodList(type, req.getDate());
 
         UserStatsDto dto = UserStatsDto.builder()
