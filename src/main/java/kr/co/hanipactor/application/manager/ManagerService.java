@@ -78,8 +78,7 @@ public class ManagerService {
     // 유저 전체 조회
     public PageResponse<UserListRes> getUserList(UserListReq req) {
         // 검색 조건 적용
-        Specification<User> spec = UserSpecification.getRole()
-                                                    .and(UserSpecification.hasStartDate(req.getStartDate()))
+        Specification<User> spec = UserSpecification.hasStartDate(req.getStartDate())
                                                     .and(UserSpecification.hasEndDate(req.getEndDate()))
                                                     .and(UserSpecification.hasLoginId(req.getLoginId()))
                                                     .and(UserSpecification.hasName(req.getName()))
