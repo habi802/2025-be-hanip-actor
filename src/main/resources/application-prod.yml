@@ -22,7 +22,10 @@ management:
 constants:
   file:
     upload-directory: home/download/images
+    user-pic: /user
     store-pic: /store
+    store-banner-pic: /store/banner
+    store-menu-pic: /menu
   open-feign:
     action: hanip-action
 
