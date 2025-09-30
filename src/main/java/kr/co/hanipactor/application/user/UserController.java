@@ -105,6 +105,15 @@ public class UserController {
         );
     }
 
+    // 유저 리스트 조회 (서버 api)
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getUserList(@PathVariable Long userId) {
+        UserGetItem result = userService.findUserById(userId);
+        return ResponseEntity.ok(
+                new ResultResponse<>(200, "유저 닉네임 조회 완료", result)
+        );
+    }
+
     //  유저 정보 조회
     @GetMapping
     public ResponseEntity<ResultResponse<UserGetRes>> getUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {

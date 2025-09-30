@@ -5,6 +5,7 @@
     <select id="findAllStore">
         SELECT s.id, s.name, s.image_path, s.is_active, s.is_open,
         s.max_delivery_fee, s.min_delivery_fee, s.min_amount,
+        s.favorites, s.rating,
         GROUP_CONCAT(DISTINCT sc.category) AS categories
           FROM stores s
           LEFT JOIN store_category sc ON sc.store_id = s.id
