@@ -16,7 +16,9 @@ server:
 constants:
   file:
     upload-directory: D:/hanip/images/
+    user-pic: /user
     store-pic: /store
+    store-banner-pic: /store/banner
     store-menu-pic: /menu
   open-feign:
     action: hanip-action
