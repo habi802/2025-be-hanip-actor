@@ -76,7 +76,7 @@ public class UserService {
                 case OWNER -> {
                     String savedFileName = null;
                     if(pic != null) {
-                        savedFileName = imgUploadManager.saveStorePic(user.getId(), pic);
+                        savedFileName = imgUploadManager.saveUserPic(user.getId(), pic);
                     }
                     Store store = Store.builder()
                             .user(savedUser)
@@ -268,7 +268,12 @@ public class UserService {
 
         // 4) 프로필 이미지 (비번 검증 후에 저장)
         if (pic != null && !pic.isEmpty()) {
-            String savedFileName = imgUploadManager.saveUserProfilePic(user.getId(), pic);
+            // 기존의 유저 이미지 삭제 후 이미지를 저장함
+            if (user.getImagePath() != null) {
+                imgUploadManager.removeUserDirectory(user.getId());
+            }
+
+            String savedFileName = imgUploadManager.saveUserPic(user.getId(), pic);
             user.setImagePath(savedFileName);
         }
 
