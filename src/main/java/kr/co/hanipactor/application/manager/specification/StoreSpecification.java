@@ -131,13 +131,13 @@ public class StoreSpecification {
     }
 
     // 영업 승인 상태
-    public static Specification<Store> hasIsActive(Integer isActive) {
+    public static Specification<Store> hasIsActive(String isActive) {
         return (root, query, cb) -> {
-            if (isActive == null) {
+            if (isActive == null || isActive.isEmpty()) {
                 return null;
             }
 
-            return cb.equal(root.get("isActive"), isActive);
+            return cb.equal(root.get("isActive"), Integer.valueOf(isActive));
         };
     }
 }

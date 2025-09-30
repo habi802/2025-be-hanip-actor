@@ -16,7 +16,7 @@ public class StoreListReq {
     private String category;
     private String address;
     private String tel;
-    private int isActive;
+    private String isActive;
     private int pageNumber;
     private int pageSize;
 }

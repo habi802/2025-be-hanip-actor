@@ -12,15 +12,6 @@ import java.time.LocalDateTime;
 
 // 유저 검색 조건을 리턴하는 메소드가 들어있는 클래스
 public class UserSpecification {
-    public static Specification<User> getRole() {
-        return (root, query, cb) -> {
-            return cb.or(
-                cb.equal(root.get("role"), "01"),
-                cb.equal(root.get("role"), "02")
-            );
-        };
-    }
-
     public static Specification<User> hasStartDate(String startDate) {
         return (root, query, cb) -> {
             if (startDate == null || startDate.isEmpty()) {

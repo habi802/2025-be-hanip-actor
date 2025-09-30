@@ -11,7 +11,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ToString
 public class ConstFile {
     private final String uploadDirectory;
-    private final String feedPic;
+    private final String userPic;
     private final String storePic;
+    private final String storeBannerPic;
     private final String storeMenuPic;
 }

@@ -128,7 +128,7 @@
                 SELECT DATE_FORMAT(w.week_start, '%x-W%v') AS period, COUNT(s.id) AS total
                 FROM weeks w
                 LEFT JOIN stores s
-                ON DATE(DATE_SUB(o.created_at, INTERVAL WEEKDAY(o.created_at) DAY)) = w.week_start
+                ON DATE(DATE_SUB(s.created_at, INTERVAL WEEKDAY(s.created_at) DAY)) = w.week_start
                 GROUP BY w.week_start
                 ORDER BY w.week_start ASC
             </when>
