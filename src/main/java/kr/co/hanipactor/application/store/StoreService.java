@@ -48,13 +48,6 @@ public class StoreService {
             List<EnumStoreCategory> categories = categoryCodes.stream()
                     .map(code -> EnumStoreCategory.valueOfCode(code))
                     .toList();
-
-            storeGetListRes.setCategory(categories);
-            log.info("가게 아이디: {}", storeGetListRes.getId());
-            log.info("유저 아이디: {}", signedUserId);
-            Long userIdParam = signedUserId != null ? signedUserId : -1L;
-            boolean favorites = favoritesClient.getStoreFavorites(storeGetListRes.getId(), userIdParam);
-            storeGetListRes.setFavorite(favorites);
         }
         return list;
     }

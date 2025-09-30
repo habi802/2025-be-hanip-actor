@@ -337,4 +337,17 @@ public class UserService {
 
         userAddressRepository.delete(userAddress);
     }
+
+    // 유저 닉네임 불러오기 (feign)
+    public UserGetItem findUserById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        UserGetItem userGetItem = UserGetItem.builder()
+                .id(user.getId())
+                .userNickName(user.getName())
+                .userTel(user.getPhone())
+                .build();
+
+        return userGetItem;
+    }
 }
