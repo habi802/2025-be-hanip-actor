@@ -86,6 +86,17 @@ public class UserController {
         );
     }
 
+    @PostMapping("/check-id")
+    public ResponseEntity<ResultResponse<Integer>> findId(@RequestBody UserPostReq req) {
+        Integer result = userService.findId(req);
+
+        return result != null
+                ? ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ResultResponse.fail(400, "이미 등록된 아이디입니다."))
+                : ResponseEntity.ok(ResultResponse.success(result));
+    }
+
     // 유저 주소 등록
     @PostMapping("/address")
     public ResponseEntity<ResultResponse<?>> saveUserAddress(@AuthenticationPrincipal UserPrincipal userPrincipal,

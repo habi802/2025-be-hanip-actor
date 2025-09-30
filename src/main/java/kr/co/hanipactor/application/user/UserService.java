@@ -189,6 +189,10 @@ public class UserService {
         return 1;
     }
 
+    Integer findId(UserPostReq req) {
+        return userMapper.findIdByLoginIdAndRole(req);
+    }
+
     // 유저 리스트 조회
     public Map<Long, UserGetItem> getUserList(List<Long> userIdList) {
         List<User> userList = userRepository.findAllById(userIdList);

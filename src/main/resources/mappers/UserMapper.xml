@@ -16,7 +16,7 @@
         SELECT id
         FROM users
         WHERE login_id = #{loginId}
-        AND role = #{role}
+        AND role = #{role.code}
         LIMIT 1;
     </select>
 
