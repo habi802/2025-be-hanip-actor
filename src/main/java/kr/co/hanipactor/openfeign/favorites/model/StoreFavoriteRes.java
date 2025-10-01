@@ -1,4 +1,4 @@
-package kr.co.hanipactor.openfegin.favorites.model;
+package kr.co.hanipactor.openfeign.favorites.model;
 
 import lombok.Getter;
 import lombok.ToString;

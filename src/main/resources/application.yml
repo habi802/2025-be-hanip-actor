@@ -21,7 +21,8 @@ constants:
     store-banner-pic: /store/banner
     store-menu-pic: /menu
   open-feign:
-    action: hanip-action
+    action:
+      url: http://localhost:8082
 
   jwt:
     issuer: green502@green.com #토큰 발행자

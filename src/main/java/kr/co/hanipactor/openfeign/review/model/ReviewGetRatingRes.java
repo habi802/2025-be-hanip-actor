@@ -1,4 +1,4 @@
-package kr.co.hanipactor.openfegin.review.model;
+package kr.co.hanipactor.openfeign.review.model;
 
 import lombok.Getter;
 import lombok.Setter;
