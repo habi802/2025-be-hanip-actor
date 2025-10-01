@@ -9,8 +9,8 @@ import kr.co.hanipactor.configuration.utils.ImgUploadManager;
 import kr.co.hanipactor.entity.Store;
 import kr.co.hanipactor.entity.StoreCategory;
 import kr.co.hanipactor.entity.StoreCategoryIds;
-import kr.co.hanipactor.openfegin.favorites.FavoritesClient;
-import kr.co.hanipactor.openfegin.review.ReviewClient;
+import kr.co.hanipactor.openfeign.favorites.FavoritesClient;
+import kr.co.hanipactor.openfeign.review.ReviewClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
