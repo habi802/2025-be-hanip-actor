@@ -1,7 +1,3 @@
-eureka:
-  client:
-    enabled: false
-
 server:
   port: 8080
   servlet:
@@ -9,15 +5,6 @@ server:
       charset: UTF-8
       enabled: true
       force: true
-
-management:
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: "*"
 
 constants:
   file:
@@ -29,7 +16,6 @@ constants:
   open-feign:
     action:
       name: hanip-action
-
   jwt:
     issuer: green502@green.com #토큰 발행자
     bearer-format: JWT
@@ -40,14 +26,27 @@ constants:
     domain: greenart.n-e.kr
 
     access-token-cookie-name: access-token
-    access-token-cookie-path: / #모든 경로에서 access-token 값이 넘어온다.
-    access-token-cookie-validity-seconds: 86_400 # 15분 (s) 60 * 15
-    access-token-validity-milliseconds: 86_400_000 # 15분 (ms) 60 * 15 * 1000
+    access-token-cookie-path: /
+    access-token-cookie-validity-seconds: 86_400
+    access-token-validity-milliseconds: 86_400_000
 
     refresh-token-cookie-name: refresh-token
-    refresh-token-cookie-path: /hanip-actor/api/user/reissue #해당 path 때만 refresh-token 값이 넘어온다.
-    refresh-token-cookie-validity-seconds: 1_296_000 # 15일 (s) 60 * 60 * 24 * 15
-    refresh-token-validity-milliseconds: 1_296_000_000 # 15일 (ms) 60 * 60 * 24 * 15 * 1000
+    refresh-token-cookie-path: /hanip-actor/api/user/reissue
+    refresh-token-cookie-validity-seconds: 1_296_000
+    refresh-token-validity-milliseconds: 1_296_000_000
+
+eureka:
+  client:
+    enabled: false
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 spring:
   application:
