@@ -15,7 +15,7 @@ constants:
     store-menu-pic: /menu
   open-feign:
     action:
-      name: hanip-action
+      url: hanip-action
   jwt:
     issuer: green502@green.com #토큰 발행자
     bearer-format: JWT
