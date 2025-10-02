@@ -23,4 +23,5 @@ public class StoreGetListRes {
     private int favorites; // 좋아요 갯수
     private boolean isFavorite; // 좋아요 유무
     private List<EnumStoreCategory> category; // 카테고리
+    Integer totalRow;
 }

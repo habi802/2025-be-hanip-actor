@@ -1,12 +1,8 @@
 package kr.co.hanipactor.application.store;
 
-
-import jakarta.servlet.annotation.MultipartConfig;
 import kr.co.hanipactor.application.store.model.*;
-import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.ResultResponse;
 import kr.co.hanipactor.configuration.model.UserPrincipal;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 

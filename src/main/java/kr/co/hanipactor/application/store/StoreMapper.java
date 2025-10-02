@@ -15,5 +15,7 @@ public interface StoreMapper {
     Integer findStoreIdByUserId(long userId);
     List<StoreGetListRes> findAllStore(@Param("req") StoreGetListReq req,
                                        @Param("categoryCode") String categoryCode); // 가게전체조회 & 검색
+    Integer findAllStoreCount(@Param("req") StoreGetListReq req,
+                              @Param("categoryCode") String categoryCode);
     List<StoreStatsRes> findStatsByDate(StoreStatsDto dto); // 가게 등록 수 통계
 }

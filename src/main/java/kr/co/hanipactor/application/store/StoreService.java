@@ -39,8 +39,13 @@ public class StoreService {
         List<StoreGetListRes> list = storeMapper.findAllStore(req, req.getCategory());
         List<Long> storeIdList = new ArrayList<>(list.size()); // storeId 수집용
 
+        // 전체 데이터 개수
+        Integer totalRow = storeMapper.findAllStoreCount(req, req.getCategory());
+
         for (StoreGetListRes storeGetListRes : list) {
             storeIdList.add(storeGetListRes.getId());
+
+            storeGetListRes.setTotalRow(totalRow);
         }
 
         return list;
