@@ -19,7 +19,31 @@
             </if>
         </where>
         GROUP BY s.id
-        ORDER BY s.id DESC
+        ORDER BY
+        <choose>
+            <when test="req.sortColumn != null and req.sortColumn == 'minAmount'">
+                s.min_amount
+                <if test="req.sortOrder != null">
+                    ${req.sortOrder}
+                </if>
+            </when>
+            <when test="req.sortColumn != null and req.sortColumn == 'rating'">
+                s.rating
+                <if test="req.sortOrder != null">
+                    ${req.sortOrder}
+                </if>
+            </when>
+            <when test="req.sortColumn != null and req.sortColumn == 'favorites'">
+                s.favorites
+                <if test="req.sortOrder != null">
+                    ${req.sortOrder}
+                </if>
+            </when>
+            <otherwise>
+                s.created_at DESC
+            </otherwise>
+        </choose>,
+        s.id DESC
         LIMIT #{req.size} OFFSET #{req.page}
     </select>
 
