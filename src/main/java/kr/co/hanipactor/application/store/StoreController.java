@@ -45,10 +45,11 @@ public class StoreController {
     // 가게 수정 (사장)
     @PutMapping("/update")
     public ResponseEntity<ResultResponse<Integer>> modifyStore(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                      @RequestPart StorePutReq req,
-                                                      @RequestPart(required = false) MultipartFile pic) {
+                                                               @RequestPart StorePutReq req,
+                                                               @RequestPart(required = false) MultipartFile pic,
+                                                               @RequestPart(required = false) MultipartFile bannerPic) {
         Long signedUserId = userPrincipal.getSignedUserId();
-        Integer result = storeService.modifyStore(signedUserId, req, pic);
+        Integer result = storeService.modifyStore(signedUserId, req, pic, bannerPic);
         return ResponseEntity.ok(new ResultResponse<>(200, "가게 수정 성공", result));
     }
 

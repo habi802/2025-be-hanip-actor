@@ -81,7 +81,7 @@ public class StoreService {
 
     // 가게 정보 수정
     @Transactional
-    public Integer modifyStore(Long signedUserId, StorePutReq req, MultipartFile pic) {
+    public Integer modifyStore(Long signedUserId, StorePutReq req, MultipartFile pic, MultipartFile bannerPic) {
         Store store = storeRepository.findByUserId(signedUserId)
                 .orElseThrow(() -> new RuntimeException("해당 유저가 관리하는 가게가 아닙니다."));
         int result = 0;
@@ -119,9 +119,13 @@ public class StoreService {
 
         // 가게 활성화 여부 상관없이 수정 가능한 항목
         // 가게 이미지
-        if (pic != null && !pic.isEmpty()) {
+        if (pic != null && !pic.isEmpty() || bannerPic != null && !bannerPic.isEmpty()) {
             String savedFileName = imgUploadManager.saveStorePic(signedUserId, pic);
             store.setImagePath(savedFileName);
+            result += 1;
+
+            String savedFileName2 = imgUploadManager.saveStorePic(signedUserId, bannerPic);
+            store.setBannerPath(savedFileName2);
             result += 1;
         }
 
