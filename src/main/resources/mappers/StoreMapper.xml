@@ -23,6 +23,21 @@
         LIMIT #{req.size} OFFSET #{req.page}
     </select>
 
+    <select id="findAllStoreCount">
+        SELECT COUNT(DISTINCT s.id)
+        FROM stores s
+        LEFT JOIN store_category sc ON sc.store_id = s.id
+        LEFT JOIN menus m ON m.store_id = s.id
+        <where>
+            <if test="req.searchText != null and req.searchText != ''">
+                AND (s.name LIKE '%${req.searchText}%' OR m.name LIKE '%${req.searchText}%')
+            </if>
+            <if test="categoryCode != null and categoryCode != ''">
+                AND sc.category = #{categoryCode}
+            </if>
+        </where>
+    </select>
+
     <!-- 가게 상세 조회 -->
     <select id="findByStoreId">
         SELECT s.id, s.user_id, s.category, s.name, s.comment,

@@ -14,7 +14,7 @@ public class StoreGetListReq {
     private Integer page;
     private Integer size;
 
-    @ConstructorProperties({"category", "search_text", "page", "size"})
+    @ConstructorProperties({"category", "searchText", "page", "size"})
     public StoreGetListReq(String category, String searchText, Integer page, Integer size) {
         this.category = category;
         this.searchText = searchText;
