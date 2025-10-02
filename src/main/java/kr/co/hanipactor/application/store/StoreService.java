@@ -119,13 +119,14 @@ public class StoreService {
 
         // 가게 활성화 여부 상관없이 수정 가능한 항목
         // 가게 이미지
-        if (pic != null && !pic.isEmpty() || bannerPic != null && !bannerPic.isEmpty()) {
+        if (pic != null && !pic.isEmpty()) {
             String savedFileName = imgUploadManager.saveStorePic(signedUserId, pic);
             store.setImagePath(savedFileName);
             result += 1;
-
-            String savedFileName2 = imgUploadManager.saveStorePic(signedUserId, bannerPic);
-            store.setBannerPath(savedFileName2);
+        }
+        if (bannerPic != null && !bannerPic.isEmpty()) {
+            String savedFileName = imgUploadManager.saveStorePic(signedUserId, bannerPic);
+            store.setBannerPath(savedFileName);
             result += 1;
         }
 
