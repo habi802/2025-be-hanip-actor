@@ -35,19 +35,14 @@ public class StoreService {
     private final ImgUploadManager imgUploadManager;
 
     // 전체 가게 조회 & 가게 카테고리 및 가게 검색
-    public List<StoreGetListRes> findAllStore(StoreGetListReq req, Long signedUserId) {
-        String categoryCode = req.getCategory() != null ? req.getCategory().getCode() : null; // Enum -> String 변환
-        List<StoreGetListRes> list = storeMapper.findAllStore(req, categoryCode);
+    public List<StoreGetListRes> findAllStore(StoreGetListReq req) {
+        List<StoreGetListRes> list = storeMapper.findAllStore(req, req.getCategory());
         List<Long> storeIdList = new ArrayList<>(list.size()); // storeId 수집용
 
         for (StoreGetListRes storeGetListRes : list) {
-            storeIdList.add(storeGetListRes.getId()); // storeId 수집
-            List<String> categoryCodes = storeCategoryMapper.findByStoreId(storeGetListRes.getId());
-
-            List<EnumStoreCategory> categories = categoryCodes.stream()
-                    .map(code -> EnumStoreCategory.valueOfCode(code))
-                    .toList();
+            storeIdList.add(storeGetListRes.getId());
         }
+
         return list;
     }
 

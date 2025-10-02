@@ -25,14 +25,10 @@ import java.util.List;
 public class StoreController {
     private final StoreService storeService;
 
-    // 가게 전체 조회 (유저 전용)
+    // 가게 전체 조회 (고객)
     @GetMapping
-    public ResponseEntity<ResultResponse<List<StoreGetListRes>>> findAllStore(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                                              @ModelAttribute StoreGetListReq req) {
-        Long signedUserId = (userPrincipal != null) ? userPrincipal.getSignedUserId() : null;
-        log.info("검색 요청: {}", req);
-        log.info("검색자 확인: {}", signedUserId);
-        List<StoreGetListRes> result = storeService.findAllStore(req, signedUserId);
+    public ResponseEntity<ResultResponse<List<StoreGetListRes>>> findAllStore(@ModelAttribute StoreGetListReq req) {
+        List<StoreGetListRes> result = storeService.findAllStore(req);
         return ResponseEntity.ok(new ResultResponse<>(200, "가게 조회 성공", result));
     }
 

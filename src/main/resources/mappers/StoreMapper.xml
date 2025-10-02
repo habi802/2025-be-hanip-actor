@@ -20,7 +20,7 @@
         </where>
         GROUP BY s.id
         ORDER BY s.id DESC
-        LIMIT #{req.size} OFFSET #{req.offset}
+        LIMIT #{req.size} OFFSET #{req.page}
     </select>
 
     <!-- 가게 상세 조회 -->
