@@ -59,6 +59,8 @@ spring:
       reload:
         enabled: true
         strategy: refresh
+    loadbalancer:
+      enabled: true
   datasource:
     url: jdbc:log4jdbc:mariadb://112.222.157.157:5011/final_actor
     username: green1
