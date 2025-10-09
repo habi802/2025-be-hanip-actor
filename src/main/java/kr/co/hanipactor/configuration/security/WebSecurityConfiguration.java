@@ -37,7 +37,7 @@ public class WebSecurityConfiguration {
                 //.cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(req -> req
                         // 인증 없이 허용할 API들
-                        .requestMatchers("/api/user/login", "/api/user/join", "/api/hanip-manager/actor/login", "/api/store").permitAll()
+                        .requestMatchers("/api/user/login", "/api/user/join", "/api/hanip-manager/actor/login", "/api/store","/api/kakao-login/authorize").permitAll()
 
                         // 사장 계정만 가능한 API
                         .requestMatchers(HttpMethod.PATCH, "/api/store/{storeId}").hasRole(EnumUserRole.OWNER.name())

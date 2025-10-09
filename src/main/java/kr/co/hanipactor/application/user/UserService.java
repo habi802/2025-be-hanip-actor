@@ -225,6 +225,7 @@ public class UserService {
                          .postcode(userAddress != null ? userAddress.getPostcode() : null)
                          .address(userAddress != null ? userAddress.getAddress() : null)
                          .addressDetail(userAddress != null ? userAddress.getAddressDetail() : null)
+                         .providerType(user.getProviderType())
                          .role(user.getRole())
                          .created(user.getCreatedAt())
                          .build();

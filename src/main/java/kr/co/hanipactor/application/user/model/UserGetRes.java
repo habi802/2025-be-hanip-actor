@@ -1,6 +1,7 @@
 package kr.co.hanipactor.application.user.model;
 
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
+import kr.co.hanipactor.configuration.security.model.SignInProviderType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -22,4 +23,5 @@ public class UserGetRes {
     private String addressDetail;
     private EnumUserRole role;
     private LocalDateTime created;
+    private SignInProviderType providerType;
 }
