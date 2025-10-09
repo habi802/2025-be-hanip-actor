@@ -141,7 +141,7 @@ public class UserService {
 
         // 유저 롤 확인
         if (!user.getRole().equals(req.getRole())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "role을 확인해주세요.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "아이디/비밀번호를 확인해 주세요.");
         }
 
         Integer storeId = 0;
