@@ -12,7 +12,7 @@ import java.util.List;
 @FeignClient(
         name = "hanip-action",
         contextId = "reviewClient",
-        url = "${constants.open-feign.action.url}",
+        url = "${constants.open-feign.action.url:}",
         configuration = FeignConfiguration.class)
 public interface ReviewClient {
     @GetMapping("/api/review/store-review/{storeId}")

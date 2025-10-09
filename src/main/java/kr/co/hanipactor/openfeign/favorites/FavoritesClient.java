@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(
         name = "hanip-action",
         contextId = "favoriteClient",
-        url = "${constants.open-feign.action.url}",
+        url = "${constants.open-feign.action.url:}",
         configuration = FeignConfiguration.class)
 public interface FavoritesClient {
     @GetMapping("/api/favorite/count")
