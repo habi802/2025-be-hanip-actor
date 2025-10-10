@@ -189,8 +189,8 @@ public class UserService {
         return 1;
     }
 
-    Integer findId(UserPostReq req) {
-        return userMapper.findIdByLoginIdAndRole(req);
+    Integer findId(String loginId) {
+        return userMapper.findIdByLoginId(loginId);
     }
 
     // 유저 리스트 조회
