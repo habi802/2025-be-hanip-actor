@@ -94,7 +94,7 @@ spring:
         registration:
           kakao:
             client-name: Kakao
-            client-id: df86f2c75ac6f162814e46850f6bb6c3
+            client-id: e873cc38e6fce8a0cb5330e26e8db967
             client-secret: lvhWJP6ErRSY4eRUz1SrMBwO35ouvHkT
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
