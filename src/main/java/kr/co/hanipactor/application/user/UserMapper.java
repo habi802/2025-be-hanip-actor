@@ -15,6 +15,7 @@ import java.util.List;
 public interface UserMapper {
     int save(UserJoinReq req);
     Integer findIdByLoginIdAndRole(UserPostReq req);
+    Integer findIdByLoginId(String loginId);
     UserLoginRes findByLoginId(UserLoginReq req);
     List<UserStatsRes> findStatsByDate(UserStatsDto dto); // 가입자 수 통계
 }

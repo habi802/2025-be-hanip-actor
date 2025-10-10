@@ -20,6 +20,13 @@
         LIMIT 1;
     </select>
 
+    <select id="findIdByLoginId">
+        SELECT id
+        FROM users
+        WHERE login_id = #{loginId}
+        LIMIT 1;
+    </select>
+
     <select id="findByLoginId">
         SELECT id, login_pw
         FROM users

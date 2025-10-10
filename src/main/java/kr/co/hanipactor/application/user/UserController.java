@@ -88,8 +88,8 @@ public class UserController {
     }
 
     @PostMapping("/check-id")
-    public ResponseEntity<ResultResponse<Integer>> findId(@RequestBody UserPostReq req) {
-        Integer result = userService.findId(req);
+    public ResponseEntity<ResultResponse<Integer>> findId(@RequestParam String loginId) {
+        Integer result = userService.findId(loginId);
 
         return result != null
                 ? ResponseEntity
