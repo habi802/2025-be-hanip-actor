@@ -77,12 +77,14 @@ public class JwtTokenManager {
     public void reissue(HttpServletRequest request, HttpServletResponse response) {
         //request에서 refreshToken을 얻는다.
         String refreshToken = getRefreshTokenFromCookie(request);
+        log.info("refreshToken: {}", refreshToken);
 
         //refreshToken에서 jwtUser를 만든다.
         JwtUser jwtUser = getJwtUserFromToken(refreshToken);
 
         //jwtUser로 accessToken을 발행한다.
         String accessToken = generateAccessToken(jwtUser);
+        log.info("accessToken: {}", accessToken);
 
         //accessToken을 쿠키에 담는다.
         setAccessTokenInCookie(response, accessToken);
