@@ -8,7 +8,7 @@ server:
 
 constants:
   file:
-    upload-directory: home/download/images
+    upload-directory: /home/download/images
     user-pic: /user
     store-pic: /store
     store-banner-pic: /store/banner
