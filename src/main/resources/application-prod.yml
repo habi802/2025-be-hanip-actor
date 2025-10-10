@@ -15,7 +15,7 @@ constants:
     store-menu-pic: /menu
   open-feign:
     action:
-      url: hanip-action
+      url: http://hanip-action:8080
   jwt:
     issuer: green502@green.com #토큰 발행자
     bearer-format: JWT
@@ -94,7 +94,7 @@ spring:
         registration:
           kakao:
             client-name: Kakao
-            client-id: df86f2c75ac6f162814e46850f6bb6c3
+            client-id: e873cc38e6fce8a0cb5330e26e8db967
             client-secret: lvhWJP6ErRSY4eRUz1SrMBwO35ouvHkT
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
