@@ -19,7 +19,7 @@
             </if>
         </where>
         GROUP BY s.id
-        ORDER BY
+        ORDER BY s.is_open DESC,
         <choose>
             <when test="req.sortColumn != null and req.sortColumn == 'minAmount'">
                 s.min_amount
