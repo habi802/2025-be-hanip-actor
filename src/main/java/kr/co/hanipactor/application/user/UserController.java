@@ -71,6 +71,7 @@ public class UserController {
     // 토큰 재발행
     @PostMapping("/reissue")
     public ResponseEntity<ResultResponse<?>> reissue(HttpServletResponse response, HttpServletRequest request) {
+        log.info("토큰 재발행");
         jwtTokenManager.reissue(request, response);
         return ResponseEntity.ok(ResultResponse.success("토큰 재발급 성공"));
     }
