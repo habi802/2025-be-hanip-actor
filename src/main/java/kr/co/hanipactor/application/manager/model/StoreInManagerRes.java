@@ -11,6 +11,7 @@ import java.util.List;
 @ToString
 public class StoreInManagerRes {
     private long storeId;
+    private long userId;
     private String name;
     private String imagePath;
     private List<String> categories;
