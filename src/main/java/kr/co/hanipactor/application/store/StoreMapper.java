@@ -17,5 +17,7 @@ public interface StoreMapper {
                                        @Param("categoryCode") String categoryCode); // 가게전체조회 & 검색
     Integer findAllStoreCount(@Param("req") StoreGetListReq req,
                               @Param("categoryCode") String categoryCode);
+    Integer findCountToday(); // 금일 가게 등록 수 통계
     List<StoreStatsRes> findStatsByDate(StoreStatsDto dto); // 가게 등록 수 통계
+
 }
