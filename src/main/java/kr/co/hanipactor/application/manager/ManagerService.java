@@ -3,6 +3,8 @@ package kr.co.hanipactor.application.manager;
 import kr.co.hanipactor.application.manager.model.*;
 import kr.co.hanipactor.application.manager.specification.StoreSpecification;
 import kr.co.hanipactor.application.manager.specification.UserSpecification;
+import kr.co.hanipactor.application.menu.MenuRepository;
+import kr.co.hanipactor.application.menu.model.MenuListGetRes;
 import kr.co.hanipactor.application.store.StoreMapper;
 import kr.co.hanipactor.application.store.StoreRepository;
 import kr.co.hanipactor.application.storecategory.StoreCategoryRepository;
@@ -11,18 +13,17 @@ import kr.co.hanipactor.application.user.UserRepository;
 import kr.co.hanipactor.application.user.model.UserLoginDto;
 import kr.co.hanipactor.application.user.model.UserLoginReq;
 import kr.co.hanipactor.application.user.model.UserLoginRes;
+import kr.co.hanipactor.configuration.enumcode.model.EnumMenuType;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.JwtUser;
-import kr.co.hanipactor.entity.Store;
-import kr.co.hanipactor.entity.StoreCategory;
-import kr.co.hanipactor.entity.User;
-import kr.co.hanipactor.entity.UserAddress;
+import kr.co.hanipactor.entity.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -43,6 +46,7 @@ public class ManagerService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final StoreRepository storeRepository;
+    private final MenuRepository menuRepository;
     private final StoreMapper storeMapper;
     private final StoreCategoryRepository storeCategoryRepository;
 
@@ -89,7 +93,7 @@ public class ManagerService {
                                                     .and(UserSpecification.hasRole(req.getRole()));
 
         // 페이징 및 페이지 사이즈 적용
-        Pageable pageable = req.getPageSize() == -1 ? Pageable.unpaged() : PageRequest.of(req.getPageNumber() - 1, req.getPageSize());
+        Pageable pageable = req.getPageSize() == -1 ? Pageable.unpaged() : PageRequest.of(req.getPageNumber() - 1, req.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
 
         // 검색 조건에 맞는 유저 데이터를 가져온 뒤,
         // 필요한 컬럼을 멤버 필드로 가진 객체 타입의 Page 변수를 선언하여 리턴함
@@ -145,7 +149,7 @@ public class ManagerService {
                                                       .and(StoreSpecification.hasIsActive(req.getIsActive()));
 
         // 페이징 및 페이지 사이즈 적용
-        Pageable pageable = req.getPageSize() == -1 ? Pageable.unpaged() : PageRequest.of(req.getPageNumber() - 1, req.getPageSize());
+        Pageable pageable = req.getPageSize() == -1 ? Pageable.unpaged() : PageRequest.of(req.getPageNumber() - 1, req.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
 
         Page<Store> page = storeRepository.findAll(spec, pageable);
         List<StoreListRes> result = page.stream().map(store -> {
@@ -160,7 +164,7 @@ public class ManagerService {
                                    .openDate(store.getOpenDate())
                                    .name(store.getName())
                                    .ownerName(store.getOwnerName())
-                                   .businessNumber(store.getBusinessNumber())
+                                   .businessNumber(store.getBusinessNumber().replaceFirst("(\\d{3})(\\d{2})(\\d{5})", "$1-$2-$3"))
                                    .categories(categories)
                                    .address(store.getPostcode() + ", " + store.getAddress() + (store.getAddressDetail() != null && !store.getAddressDetail().isEmpty() ? ", " + store.getAddressDetail() : ""))
                                    .tel(store.getTel())
@@ -177,19 +181,48 @@ public class ManagerService {
     public StoreInManagerRes getStore(Long storeId) {
         Store store = storeRepository.findById(storeId).orElse(null);
 
+        // 가게 카테고리 조회
         List<StoreCategory> storeCategories = storeCategoryRepository.findByStoreId(storeId);
         List<String> categories = new ArrayList<>();
         for(StoreCategory storeCategory : storeCategories) {
             categories.add(storeCategory.getStoreCategoryId().getCategory().getValue());
         }
 
+        // 가게 메뉴 조회
+        List<Menu> menus = menuRepository.findByStore_Id(store.getId());
+        Map<EnumMenuType, List<Menu>> sortedMenus = menus.stream()
+                                                         .collect(Collectors.groupingBy(Menu::getMenuType));
+
+        List<MenuListGetRes> menuList = new ArrayList<>(sortedMenus.size());
+        for (EnumMenuType menuType : sortedMenus.keySet()) {
+            MenuListGetRes res = MenuListGetRes.builder()
+                                               .menuType(menuType.getValue())
+                                               .menus(sortedMenus.get(menuType).stream()
+                                                                               .map(menu -> MenuListGetRes.Menu.builder()
+                                                                                                               .storeId(menu.getStore().getId())
+                                                                                                               .isHide(menu.getIsHide())
+                                                                                                               .isSoldOut(menu.getIsSoldOut())
+                                                                                                               .menuId(menu.getId())
+                                                                                                               .name(menu.getName())
+                                                                                                               .price(menu.getPrice())
+                                                                                                               .comment(menu.getComment())
+                                                                                                               .imagePath(menu.getImagePath())
+                                                                                                               .build())
+                                                                               .toList())
+                                               .build();
+
+            menuList.add(res);
+        }
+
         // 와우..
         return StoreInManagerRes.builder()
                                 .storeId(storeId)
+                                .userId(store.getUser().getId())
                                 .name(store.getName())
                                 .imagePath(store.getImagePath())
+                                .bannerPath(store.getBannerPath())
                                 .categories(categories)
-                                .businessNumber(store.getBusinessNumber())
+                                .businessNumber(store.getBusinessNumber().replaceFirst("(\\d{3})(\\d{2})(\\d{5})", "$1-$2-$3"))
                                 .licensePath(store.getLicensePath())
                                 .ownerName(store.getOwnerName())
                                 .openDate(store.getOpenDate())
@@ -208,6 +241,7 @@ public class ManagerService {
                                 .minAmount(store.getMinAmount())
                                 .rating(store.getRating())
                                 .favorites(store.getFavorites())
+                                .menus(menuList)
                                 .build();
     }
 
