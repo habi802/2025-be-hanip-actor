@@ -17,7 +17,7 @@ public class ImgUploadManager {
     private final ConstFile constFile;
     private final MyFileUtils myFileUtils;
 
-    // 유저 이미지 경로 만들기
+    // 유저 이미지 경로 만들기(고객: 프로필 이미지, 사장: 사업자 등록증 이미지)
     private String makeUserDirectoryPath(long userId) {
         return String.format("%s/%s/%d", constFile.getUploadDirectory(), constFile.getUserPic(), userId);
     }
@@ -37,7 +37,7 @@ public class ImgUploadManager {
         return String.format("%s/%s/%d/%s/%d", constFile.getUploadDirectory(), constFile.getStorePic(), storeId, constFile.getStoreMenuPic(), menuId);
     }
 
-    // 유저 이미지 저장
+    // 유저 이미지 저장(고객: 프로필 이미지, 사장: 사업자 등록증 이미지)
     public String saveUserPic(long userId, MultipartFile profilePicFile) {
         // 폴더 생성
         String directory = makeUserDirectoryPath(userId);

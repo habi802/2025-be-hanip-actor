@@ -23,6 +23,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -89,7 +90,7 @@ public class ManagerService {
                                                     .and(UserSpecification.hasRole(req.getRole()));
 
         // 페이징 및 페이지 사이즈 적용
-        Pageable pageable = req.getPageSize() == -1 ? Pageable.unpaged() : PageRequest.of(req.getPageNumber() - 1, req.getPageSize());
+        Pageable pageable = req.getPageSize() == -1 ? Pageable.unpaged() : PageRequest.of(req.getPageNumber() - 1, req.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
 
         // 검색 조건에 맞는 유저 데이터를 가져온 뒤,
         // 필요한 컬럼을 멤버 필드로 가진 객체 타입의 Page 변수를 선언하여 리턴함
@@ -145,7 +146,7 @@ public class ManagerService {
                                                       .and(StoreSpecification.hasIsActive(req.getIsActive()));
 
         // 페이징 및 페이지 사이즈 적용
-        Pageable pageable = req.getPageSize() == -1 ? Pageable.unpaged() : PageRequest.of(req.getPageNumber() - 1, req.getPageSize());
+        Pageable pageable = req.getPageSize() == -1 ? Pageable.unpaged() : PageRequest.of(req.getPageNumber() - 1, req.getPageSize(), Sort.by(Sort.Direction.DESC, "id"));
 
         Page<Store> page = storeRepository.findAll(spec, pageable);
         List<StoreListRes> result = page.stream().map(store -> {
