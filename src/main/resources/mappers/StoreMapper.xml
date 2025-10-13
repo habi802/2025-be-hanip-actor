@@ -11,6 +11,7 @@
           LEFT JOIN store_category sc ON sc.store_id = s.id
           LEFT JOIN menus m ON m.store_id = s.id
         <where>
+            s.is_active = 1
             <if test="req.searchText != null and req.searchText != ''">
                 AND (s.name LIKE '%${req.searchText}%' OR m.name LIKE '%${req.searchText}%')
             </if>
@@ -53,6 +54,7 @@
         LEFT JOIN store_category sc ON sc.store_id = s.id
         LEFT JOIN menus m ON m.store_id = s.id
         <where>
+            s.is_active = 1
             <if test="req.searchText != null and req.searchText != ''">
                 AND (s.name LIKE '%${req.searchText}%' OR m.name LIKE '%${req.searchText}%')
             </if>
