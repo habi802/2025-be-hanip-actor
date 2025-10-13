@@ -290,6 +290,18 @@ public class ManagerService {
         return periods;
     }
 
+    // 금일 가입자 수, 가게 등록 수 통계
+    public List<Integer> getTodayStats() {
+        Integer users = userMapper.findCountToday();
+        Integer stores = storeMapper.findCountToday();
+
+        List<Integer> result = new ArrayList<>(2);
+        result.add(users);
+        result.add(stores);
+
+        return result;
+    }
+
     // 가입자 수 통계
     public List<UserStatsRes> getUserStats(UserStatsReq req) {
         String type = req.getType().toUpperCase();

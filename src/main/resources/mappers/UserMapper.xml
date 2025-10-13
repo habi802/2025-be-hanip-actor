@@ -75,6 +75,14 @@
         WHERE id = #{userId}
     </update>
 
+    <!-- 금일 가입자 수 통계 -->
+    <select id="findCountToday">
+        SELECT COUNT(id)
+        FROM users
+        WHERE created_at &gt;= CURDATE()
+        AND created_at &lt; (CURDATE() + INTERVAL 1 DAY)
+    </select>
+
     <!-- 가입자 수 통계 -->
     <select id="findStatsByDate">
         <choose>

@@ -77,6 +77,13 @@ public class ManagerController {
         return ResponseEntity.ok(ResultResponse.success("가게 수정 완료"));
     }
 
+    // 금일 가입자 수, 가게 등록 수 통계
+    @GetMapping("/stats")
+    public ResponseEntity<ResultResponse<?>> getTodayStats() {
+        List<Integer> result = managerService.getTodayStats();
+        return ResponseEntity.ok(ResultResponse.success(result));
+    }
+
     // 가입자 수 통계
     @GetMapping("/user/stats")
     public ResponseEntity<ResultResponse<?>> getUserStats(@ModelAttribute UserStatsReq req) {

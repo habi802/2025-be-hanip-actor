@@ -17,5 +17,6 @@ public interface UserMapper {
     Integer findIdByLoginIdAndRole(UserPostReq req);
     Integer findIdByLoginId(String loginId);
     UserLoginRes findByLoginId(UserLoginReq req);
+    Integer findCountToday(); // 금일 가입자 수 통계
     List<UserStatsRes> findStatsByDate(UserStatsDto dto); // 가입자 수 통계
 }
