@@ -14,6 +14,7 @@ public class StoreInManagerRes {
     private long userId;
     private String name;
     private String imagePath;
+    private String bannerPath;
     private List<String> categories;
     private String businessNumber;
     private String licensePath;

@@ -190,6 +190,7 @@ public class ManagerService {
                                 .userId(store.getUser().getId())
                                 .name(store.getName())
                                 .imagePath(store.getImagePath())
+                                .bannerPath(store.getBannerPath())
                                 .categories(categories)
                                 .businessNumber(store.getBusinessNumber().replaceFirst("(\\d{3})(\\d{2})(\\d{5})", "$1-$2-$3"))
                                 .licensePath(store.getLicensePath())
