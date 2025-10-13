@@ -3,6 +3,8 @@ package kr.co.hanipactor.application.manager;
 import kr.co.hanipactor.application.manager.model.*;
 import kr.co.hanipactor.application.manager.specification.StoreSpecification;
 import kr.co.hanipactor.application.manager.specification.UserSpecification;
+import kr.co.hanipactor.application.menu.MenuRepository;
+import kr.co.hanipactor.application.menu.model.MenuListGetRes;
 import kr.co.hanipactor.application.store.StoreMapper;
 import kr.co.hanipactor.application.store.StoreRepository;
 import kr.co.hanipactor.application.storecategory.StoreCategoryRepository;
@@ -11,12 +13,10 @@ import kr.co.hanipactor.application.user.UserRepository;
 import kr.co.hanipactor.application.user.model.UserLoginDto;
 import kr.co.hanipactor.application.user.model.UserLoginReq;
 import kr.co.hanipactor.application.user.model.UserLoginRes;
+import kr.co.hanipactor.configuration.enumcode.model.EnumMenuType;
 import kr.co.hanipactor.configuration.enumcode.model.EnumUserRole;
 import kr.co.hanipactor.configuration.model.JwtUser;
-import kr.co.hanipactor.entity.Store;
-import kr.co.hanipactor.entity.StoreCategory;
-import kr.co.hanipactor.entity.User;
-import kr.co.hanipactor.entity.UserAddress;
+import kr.co.hanipactor.entity.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
@@ -36,6 +36,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,6 +46,7 @@ public class ManagerService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final StoreRepository storeRepository;
+    private final MenuRepository menuRepository;
     private final StoreMapper storeMapper;
     private final StoreCategoryRepository storeCategoryRepository;
 
@@ -178,10 +181,37 @@ public class ManagerService {
     public StoreInManagerRes getStore(Long storeId) {
         Store store = storeRepository.findById(storeId).orElse(null);
 
+        // 가게 카테고리 조회
         List<StoreCategory> storeCategories = storeCategoryRepository.findByStoreId(storeId);
         List<String> categories = new ArrayList<>();
         for(StoreCategory storeCategory : storeCategories) {
             categories.add(storeCategory.getStoreCategoryId().getCategory().getValue());
+        }
+
+        // 가게 메뉴 조회
+        List<Menu> menus = menuRepository.findByStore_Id(store.getId());
+        Map<EnumMenuType, List<Menu>> sortedMenus = menus.stream()
+                                                         .collect(Collectors.groupingBy(Menu::getMenuType));
+
+        List<MenuListGetRes> menuList = new ArrayList<>(sortedMenus.size());
+        for (EnumMenuType menuType : sortedMenus.keySet()) {
+            MenuListGetRes res = MenuListGetRes.builder()
+                                               .menuType(menuType.getValue())
+                                               .menus(sortedMenus.get(menuType).stream()
+                                                                               .map(menu -> MenuListGetRes.Menu.builder()
+                                                                                                               .storeId(menu.getStore().getId())
+                                                                                                               .isHide(menu.getIsHide())
+                                                                                                               .isSoldOut(menu.getIsSoldOut())
+                                                                                                               .menuId(menu.getId())
+                                                                                                               .name(menu.getName())
+                                                                                                               .price(menu.getPrice())
+                                                                                                               .comment(menu.getComment())
+                                                                                                               .imagePath(menu.getImagePath())
+                                                                                                               .build())
+                                                                               .toList())
+                                               .build();
+
+            menuList.add(res);
         }
 
         // 와우..
@@ -211,6 +241,7 @@ public class ManagerService {
                                 .minAmount(store.getMinAmount())
                                 .rating(store.getRating())
                                 .favorites(store.getFavorites())
+                                .menus(menuList)
                                 .build();
     }
 

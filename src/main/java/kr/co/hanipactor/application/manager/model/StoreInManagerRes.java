@@ -1,9 +1,11 @@
 package kr.co.hanipactor.application.manager.model;
 
+import kr.co.hanipactor.application.menu.model.MenuListGetRes;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -35,4 +37,5 @@ public class StoreInManagerRes {
     private int minAmount;
     private double rating;
     private int favorites;
+    private List<MenuListGetRes> menus = new ArrayList<>();
 }
