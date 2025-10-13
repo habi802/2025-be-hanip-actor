@@ -49,6 +49,10 @@ management:
         include: "*"
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 15MB
+
   application:
     name: hanip-actor
   cloud:
