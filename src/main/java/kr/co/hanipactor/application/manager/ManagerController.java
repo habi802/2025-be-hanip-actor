@@ -23,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ManagerController {
     private final ManagerService managerService;
-
     private final JwtTokenManager jwtTokenManager;
 
     // 관리자 유저 로그인
@@ -81,6 +80,13 @@ public class ManagerController {
     @GetMapping("/stats")
     public ResponseEntity<ResultResponse<?>> getTodayStats() {
         List<Integer> result = managerService.getTodayStats();
+        return ResponseEntity.ok(ResultResponse.success(result));
+    }
+
+    // 대시보드 가게 조회
+    @GetMapping("/store/dashboard")
+    public ResponseEntity<ResultResponse<?>> getStoreInDashboard() {
+        List<StoreListRes> result = managerService.getStoreInDashboard();
         return ResponseEntity.ok(ResultResponse.success(result));
     }
 

@@ -302,6 +302,26 @@ public class ManagerService {
         return result;
     }
 
+    // 대시보드 가게 조회
+    public List<StoreListRes> getStoreInDashboard() {
+        List<Store> stores = storeRepository.findTop3ByOrderByIsActiveAscCreatedAtDesc();
+
+        List<StoreListRes> result = stores.stream().map(store ->
+                    StoreListRes.builder()
+                                .openDate(store.getOpenDate())
+                                .name(store.getName())
+                                .ownerName(store.getOwnerName())
+                                .businessNumber(store.getBusinessNumber().replaceFirst("(\\d{3})(\\d{2})(\\d{5})", "$1-$2-$3"))
+                                .address(store.getPostcode() + ", " + store.getAddress() + (store.getAddressDetail() != null && !store.getAddressDetail().isEmpty() ? ", " + store.getAddressDetail() : ""))
+                                .tel(store.getTel())
+                                .isActive(store.getIsActive())
+                                .createdAt(store.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                                .build()
+        ).toList();
+
+        return result;
+    }
+
     // 가입자 수 통계
     public List<UserStatsRes> getUserStats(UserStatsReq req) {
         String type = req.getType().toUpperCase();
