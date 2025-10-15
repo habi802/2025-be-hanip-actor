@@ -171,13 +171,14 @@
             <when test="type == 'WEEK'">
                 WITH weeks AS (
                 <foreach collection="periods" item="period" separator=" UNION ALL ">
-                    SELECT #{period} AS week_start
+                    SELECT DATE(#{period}) AS week_start
                 </foreach>
                 )
                 SELECT DATE_FORMAT(w.week_start, '%x-W%v') AS period, COUNT(s.id) AS total
                 FROM weeks w
                 LEFT JOIN stores s
-                ON DATE(DATE_SUB(s.created_at, INTERVAL WEEKDAY(s.created_at) DAY)) = w.week_start
+                ON s.created_at &gt;= w.week_start
+                AND s.created_at &lt; w.week_start + INTERVAL 7 DAY
                 GROUP BY w.week_start
                 ORDER BY w.week_start ASC
             </when>
